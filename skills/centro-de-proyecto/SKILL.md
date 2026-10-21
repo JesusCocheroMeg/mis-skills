@@ -117,24 +117,45 @@ pasalas al manifiesto y dejá un enlace.
    | Siguiente paso | una propuesta |
 
 ### 4. Delegar en un repo
-Solo sobre piezas `local`. Si la pieza es `sin acceso` o `solo docs externas`, decilo y no
-delegues. El encargo al agente incluye:
+Solo sobre piezas `local` cuya ruta existe. Si la pieza es `sin acceso`, `solo docs externas` o
+su ruta no existe, decilo y no delegues. El encargo al agente incluye:
 - ruta absoluta y rama;
 - las reglas del manifiesto para ese repo;
 - «**No escribas documentación ni planes en este repo. Entregá qué cambiaste, los commits y las
-  pruebas.**» La documentación la escribe solo la sesión del centro.
+  pruebas.**» La documentación la escribe solo la sesión del centro;
+- si el dueño es `cliente` o `equipo`, el bloque de **revisión antes de commit** (flujo 5, pasos
+  1–4) copiado tal cual, con los patrones bloqueados y las excepciones del manifiesto para ese
+  repo, y «**No hagas push ni abras PR**». El agente delegado no carga esta skill: lo que no esté
+  en el encargo, no lo sabe.
 
-### 5. Revisión antes de commit o PR en un repo ajeno
+Esto vale para cualquier forma de delegar, incluidos los implementadores de
+`subagent-driven-development`: su encargo por tarea lleva este mismo bloque.
+
+Cuando el agente termina, la sesión del centro repite la revisión del flujo 5 sobre sus commits
+antes de cualquier push o PR.
+
+### 5. Revisión antes de commit, push o PR en un repo ajeno
 Aplica a toda pieza con dueño `cliente` o `equipo`, la hagas vos o un agente delegado.
 
 1. Listá los archivos:
-   - commit: `git -C <ruta> diff --cached --name-only`
-   - PR: `git -C <ruta> diff --name-only <rama base>...HEAD`
+   - commit: `git -C <ruta> diff --cached --name-only` (no uses `git commit -a`: stageá
+     explícitamente y revisá lo stageado);
+   - push o PR: `git -C <ruta> fetch` y `git -C <ruta> diff --name-only origin/<rama base>...HEAD`
+     — cubre todo lo commiteado que todavía no está en el remoto.
 2. **Bloqueá** si alguno coincide con: `docs/`, `CLAUDE.md`, `.claude/`, `AGENTS.md`,
-   `docs/superpowers/`, cualquier archivo de plan o spec, o los patrones extra del manifiesto.
+   `docs/superpowers/`, `*plan*.md`, `*spec*.md`, `*design*.md`, o los patrones extra del
+   manifiesto.
 3. Si el manifiesto declara la ruta como excepción para ese repo, no bloquea.
-4. Bloqueado: no hagas el commit ni el PR. Sacá esos archivos del stage, llevá su contenido al
-   centro si sirve, y avisá al usuario qué se bloqueó. Nunca lo resuelvas en silencio.
+4. Bloqueado en un commit: no lo hagas. Sacá esos archivos del stage, llevá su contenido al
+   centro si sirve y avisá al usuario qué se bloqueó.
+5. Bloqueado en un push o PR (ya está en commits locales): no hagas push ni PR. Un commit que
+   borra el archivo **no alcanza**: el contenido sigue en el historial que se subiría. Avisá al
+   usuario y proponé reescribir el historial local (`git rebase -i` no está disponible: usá
+   `git reset --soft origin/<rama base>` y volvé a commitear sin esos archivos, o
+   `git filter-branch`/`git filter-repo` sobre el rango). Reescribir historial requiere su
+   aprobación. Si los commits ya están en el remoto, decilo: ya se expuso y lo decide el usuario.
+
+Nunca resuelvas un bloqueo en silencio.
 
 ### 6. Llevar a la documentación general
 Al cerrar una decisión o una vertical en un proyecto con destino de documentación general, agregá
@@ -144,8 +165,8 @@ publicación es manual.
 
 ## Reglas duras
 
-- Nada del centro entra a un repo ajeno. Sin revisión (flujo 5), no hay commit ni PR en un repo
-  `cliente` o `equipo`, aunque haya afán o el pedido diga «commit de todo».
+- Nada del centro entra a un repo ajeno. Sin revisión (flujo 5), no hay commit, push ni PR en un
+  repo `cliente` o `equipo`, aunque haya afán o el pedido diga «commit de todo».
 - Un pedido de «dejar el plan registrado» en un repo ajeno se cumple en el centro, no en el repo.
 - Nunca delegues ni toques una pieza que no esté `local`.
 - Las fuentes no se editan ni se sobrescriben.
