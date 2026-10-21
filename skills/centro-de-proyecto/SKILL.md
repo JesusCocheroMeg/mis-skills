@@ -1,7 +1,7 @@
 ---
 name: centro-de-proyecto
-description: Úsala cuando el usuario quiera crear, adoptar o abrir el repo centro de un proyecto (su espacio privado junto a los repos de código), arrancar el día o pedir el estado de un proyecto con varios repos, guardar fuentes que entregó un cliente o equipo, delegar trabajo a agentes en otros repos del proyecto, o hacer commit o PR en un repo que es del cliente o del equipo. También ante menciones de centro, manifiesto, fuentes o documentación general.
-argument-hint: "[crear | adoptar | abrir sesión | delegar | fuentes]"
+description: Úsala cuando el usuario quiera crear, adoptar o abrir el repo centro de un proyecto (su espacio privado junto a los repos de código), arrancar el día o pedir el estado de un proyecto con varios repos, guardar fuentes que entregó un cliente o equipo, delegar trabajo a agentes en otros repos del proyecto, o hacer commit o PR en un repo que es del cliente o del equipo. También cuando el usuario cuenta lo que pasó en un proyecto (una reunión, un mensaje del cliente, un cambio, un problema), pregunta qué sigue, quiere preparar o cerrar una reunión, necesita que le expliquen algo para avanzar o busca herramientas para el proyecto. También ante menciones de centro, manifiesto, fuentes, bitácora o documentación general.
+argument-hint: "[crear | adoptar | abrir sesión | contar | reunión | explicar | delegar | fuentes]"
 ---
 
 # Centro de proyecto
@@ -20,6 +20,9 @@ que el manifiesto declara. Lo que hay en el centro **nunca** termina en un repo 
 Esa disposición es la convención. Un repo en otra ruta es una excepción válida y se anota en el
 manifiesto.
 
+El centro también es la **memoria y el copiloto** del proyecto: Jesús cuenta lo que va pasando,
+el centro lo guarda como historia y responde con lo que sigue (flujos 7 a 9).
+
 Esta skill define **dónde** está todo. **Cómo** se desarrolla un módulo es de
 `desarrollo-modular-vertical`; las dos se usan juntas.
 
@@ -36,18 +39,33 @@ documentación o nada de código. Nunca asumas acceso a algo que el manifiesto n
 | Eje | Valores | Qué cambia |
 |---|---|---|
 | Para quién | empresa · cliente | cliente: dueño `cliente` en sus repos (revisión obligatoria) |
-| De dónde parte | desde cero · ya empezado · en equipo | ya empezado: `diagnostico.md`; en equipo: destino de documentación general |
+| De dónde parte | en evaluación · desde cero · ya empezado · en equipo | en evaluación (propuesta que se está revisando, sin acceso al código): `propuesta.md`, `preguntas.md`, `reuniones/`, repos como `sin acceso`; ya empezado: `diagnostico.md`; en equipo: destino de documentación general |
 
-Cotizaciones y parte comercial: **fuera de alcance** de esta versión. No las propongas.
+Cotizaciones: la skill no las crea por su cuenta. Si el usuario ya trae una propuesta comercial,
+vive en `propuesta.md` y se trata como cualquier otro documento del centro.
 
 ## Estructura
 
 **Mínimo obligatorio:** `README.md` (con `## Manifiesto`), `decisiones/`, `bitacora.md`,
 `pendientes.md`. `fuentes/` si hay material entregado.
 
-**Según escenario, se propone, no se impone:** `propuesta.md`, `hoja-de-ruta.md` + `fases/`,
+**Según escenario, se propone, no se impone:** `contexto/` (cliente, personas, negocio, stack),
+`preguntas.md` (preguntas abiertas para el cliente), `reuniones/` (una por reunión),
+`guias/` (explicaciones para avanzar), `propuesta.md`, `hoja-de-ruta.md` + `fases/`,
 `diagnostico.md` (ya empezado), `implementacion/`, `argumentos.md`, `docs/modules/` (si se usa
 desarrollo vertical), `docs/superpowers/` (specs y planes).
+
+**Dónde va cada cosa que cuenta el usuario:**
+
+| Lo que llega | Va a |
+|---|---|
+| Algo que pasó, una idea, una duda propia, un riesgo | `bitacora.md` (tipo `hecho` · `idea` · `pregunta` · `observación` · `riesgo`) |
+| Algo que se decidió | `decisiones/NNNN-...md` |
+| Algo por hacer o por decidir | `pendientes.md` |
+| Una duda que solo el cliente responde | `preguntas.md` |
+| Una respuesta del cliente | `preguntas.md` (`[x] → respuesta (fecha, quién)`) y lo que cambie en `contexto/`; cita la reunión o el mensaje de donde salió |
+| Quién es quién, cómo trabaja el cliente, contexto personal | `contexto/` |
+| Una explicación de algo que hay que aprender | `guias/<tema>.md` |
 
 Cada proyecto puede agregar, quitar o renombrar lo no obligatorio, y es válido.
 
@@ -87,7 +105,7 @@ Debajo van `## Documentación general` (dónde vive, quién la mantiene, cómo s
 2. Creá la carpeta del centro como hermana de los repos de código y `git init`.
 3. Detectá los repos hermanos y sus submódulos (`.gitmodules`) y proponé el manifiesto; el
    usuario confirma dueño y reglas.
-4. Creá el mínimo más lo que el escenario sugiere. Nada comercial.
+4. Creá el mínimo más lo que el escenario sugiere.
 5. Si hay material entregado, `fuentes/` con su índice.
 6. Primer commit. El remoto debe ser privado del usuario: preguntá, no lo crees por tu cuenta.
 
@@ -104,14 +122,17 @@ pasalas al manifiesto y dejá un enlace.
    `git -C <ruta> log --oneline -3`. Si la ruta no existe, reportala como **faltante**. En un
    repo con submódulos, `git -C <ruta> submodule status`: un `+` es un commit sin registrar en el
    padre.
-3. Leé `pendientes.md` y, si existe, `docs/modules/ESTADO.md`.
+3. Leé `pendientes.md`, las últimas entradas de `bitacora.md` y, si existen, `preguntas.md`,
+   la reunión más próxima en `reuniones/` y `docs/modules/ESTADO.md`.
 4. Entregá el diagnóstico:
 
    | Campo | Contenido |
    |---|---|
    | Repos | una línea por pieza: rama · cambios sin commit · último commit · faltante / sin acceso |
+   | Dónde vamos | la historia reciente en dos o tres líneas, desde la bitácora |
    | En curso | lo que está en desarrollo según docs y ramas |
    | Pendientes | lo más importante de `pendientes.md` |
+   | Próxima reunión | fecha, con quién y preguntas abiertas que llevar, o «ninguna» |
    | Por llevar a la documentación general | filas pendientes, o «nada» |
    | Contradicciones | entre docs y git, o «ninguna» — nunca se omite |
    | Siguiente paso | una propuesta |
@@ -162,6 +183,48 @@ Al cerrar una decisión o una vertical en un proyecto con destino de documentaci
 una fila en `pendientes.md` → «Por llevar a la documentación general». Si el usuario lo pide,
 prepará el texto para pegar. Cuando confirme que lo llevó, marcá «llevado AAAA-MM-DD». La
 publicación es manual.
+
+### 7. Contar lo que pasó
+Cuando el usuario cuenta algo (reunión, mensaje, llamada, cambio, problema, cómo se siente con
+el proyecto):
+1. Leé el README, `pendientes.md`, `preguntas.md` y lo de `contexto/` que toque el tema.
+2. Registrá cada pieza donde dice la tabla «Dónde va cada cosa». La historia siempre queda en
+   `bitacora.md` con su fecha. Si una fecha es ambigua («el lunes»), anotala como supuesto en la
+   respuesta.
+3. Respondé con estas secciones, en este orden, y omití las que queden vacías:
+
+   | Sección | Contenido |
+   |---|---|
+   | **Registré** | archivos tocados, una línea cada uno |
+   | **Qué cambia** | impacto en plan, tiempos, riesgos o decisiones; contradicciones con lo anotado |
+   | **Te propongo** | el siguiente paso concreto, con opciones y una recomendación |
+   | **Para preguntar** | preguntas nuevas para el cliente (ya agregadas a `preguntas.md`) |
+   | **Para saber** | conceptos o herramientas que necesita para avanzar, en dos o tres líneas cada uno, con enlace a `guias/` si se escribió una |
+
+   Lo personal (dudas, ánimo, relación con el cliente) cuenta como contexto: se anota y pesa en
+   la propuesta.
+
+### 8. Reuniones
+**Preparar:** creá `reuniones/AAAA-MM-DD-con-quien.md` con objetivo, agenda, las preguntas de
+`preguntas.md` que corresponden a esa persona, lo que conviene contar o explicar, y lo que no se
+debe decir todavía.
+Si el usuario menciona una reunión con fecha que no tiene archivo, creala preparada sin
+preguntar y decilo en «Registré».
+**Cerrar:** cuando el usuario cuenta cómo fue, llená notas, acuerdos y pendientes del archivo
+de la reunión y seguí el flujo 7.
+
+### 9. Explicar o proponer herramientas
+Cuando el usuario necesita entender algo para avanzar (una tecnología, una pasarela, un trámite,
+un concepto del negocio del cliente) o pide herramientas:
+1. Partí del contexto del proyecto: explicá lo que sirve **para esta decisión**, no el tema en
+   general.
+2. Datos que cambian (precios, tarifas, límites, requisitos legales): consultá la fuente oficial
+   si hay herramienta de búsqueda. Si no hay o la fuente oficial no responde, usá fuentes
+   secundarias citadas y marcá «por verificar» con dónde confirmarlo.
+3. Para herramientas: dos o tres opciones comparadas en lo que importa al proyecto, y una
+   recomendación.
+4. Si la explicación sirve para después, guardala en `guias/<tema>.md` y enlazala desde
+   `pendientes.md` o la reunión donde se usa.
 
 ## Reglas duras
 

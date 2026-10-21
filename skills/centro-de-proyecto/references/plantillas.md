@@ -91,16 +91,17 @@ agrega con fecha (`AAAA-MM-DD-nombre.ext`). Las conclusiones van a `decisiones/`
 
 ## `bitacora.md`
 
-Dueño de: ideas, observaciones, preguntas y riesgos sueltos. La entrada más reciente arriba.
+Dueño de: la historia del proyecto (lo que pasó) y las ideas, observaciones y riesgos sueltos.
+La entrada más reciente arriba.
 
 ```md
 # Bitácora
 
-Ideas, observaciones y preguntas sueltas. La entrada más reciente va arriba. No hace falta
-pulirlas: si una se aprueba, pasa a `decisiones/`.
+La historia del proyecto: lo que pasó, ideas, observaciones y riesgos. La entrada más reciente va
+arriba. No hace falta pulirlas: si una idea se aprueba, pasa a `decisiones/`.
 
-**Tipos:** idea · observación · pregunta · riesgo
-**Estados:** nueva · en discusión · aprobada · descartada
+**Tipos:** hecho · idea · observación · pregunta · riesgo
+**Estados (no aplica a hechos):** nueva · en discusión · aprobada · descartada
 
 ## Plantilla
 
@@ -177,4 +178,76 @@ escribe una nueva que la reemplaza y se marca la anterior como "Reemplazada por 
 
 | # | Decisión | Estado |
 |---|---|---|
+```
+
+---
+
+## `preguntas.md`
+
+Dueño de: las preguntas que solo el cliente puede responder y sus respuestas.
+
+```md
+# Preguntas para <cliente>
+
+Marcar `[x]` cuando se resuelva y anotar la respuesta y la fecha. Cada reunión toma las preguntas
+de aquí.
+
+## <Tema: negocio / cómo trabajan / urgencia / técnico…>
+- [ ] <pregunta>
+- [x] <pregunta> → <respuesta> (AAAA-MM-DD, <quién>)
+```
+
+---
+
+## `reuniones/AAAA-MM-DD-con-quien.md`
+
+Dueño de: una reunión, antes y después.
+
+```md
+# Reunión con <persona> — <día AAAA-MM-DD, hora> (<medio>)
+
+**Objetivo:** <qué tiene que salir de esta reunión>.
+
+## Agenda
+1. <tema>
+
+## Preguntas que llevo
+- <de preguntas.md>
+
+## Qué contar / qué no decir todavía
+- <...>
+
+## Notas
+-
+
+## Acuerdos
+-
+
+## Pendientes que salen
+- [ ]
+```
+
+---
+
+## `guias/<tema>.md`
+
+Dueño de: una explicación para avanzar en el proyecto.
+
+```md
+# <Tema>
+
+**Para qué la necesito en este proyecto:** <una línea>.
+
+## Lo esencial
+<lo mínimo para decidir o trabajar>
+
+## Opciones (si es una herramienta)
+| Opción | A favor | En contra | Costo |
+|---|---|---|---|
+
+## Recomendación
+<una>
+
+## Por verificar
+- <dato> → <dónde confirmarlo>
 ```
