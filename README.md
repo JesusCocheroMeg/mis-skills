@@ -9,6 +9,7 @@ Colección de skills personalizadas para Claude Code.
 | [centro-de-proyecto](skills/centro-de-proyecto/SKILL.md) | Crear, adoptar o abrir el repo centro de un proyecto: estado multi-repo, fuentes del cliente, delegación a agentes, commits/PR en repos ajenos. |
 | [desarrollo-modular-vertical](skills/desarrollo-modular-vertical/SKILL.md) | Desarrollo por módulos, verticales y versiones: iniciar, auditar, planificar, ajustar y cerrar. |
 | [prompt-builder](skills/prompt-builder/SKILL.md) | Crear o revisar prompts de implementación para features, módulos o endpoints (sin implementar). |
+| [reporte-daily](skills/reporte-daily/SKILL.md) | Reporte diario del daily (Hoy estoy en / Me frena / Necesito a), resumido y en lenguaje no técnico. ⚠️ Vive en claude.ai (ver abajo). |
 
 ## Estructura
 
@@ -28,6 +29,11 @@ for s in skills/*/; do
   ln -sfn "$PWD/$s" ~/.claude/skills/$(basename "$s")
 done
 ```
+
+> **Excepción: `reporte-daily`.** Está creada en claude.ai y se sincroniza sola en
+> `~/.claude/skills/synced/`, así que **no** se enlaza (quedaría duplicada). Aquí se guarda
+> como copia: si la editas, actualízala en claude.ai (Settings → Capabilities → Skills) y copia
+> el cambio a este repo.
 
 ## Agregar una skill nueva
 

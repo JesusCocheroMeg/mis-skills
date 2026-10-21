@@ -92,8 +92,9 @@ Debajo van `## Documentación general` (dónde vive, quién la mantiene, cómo s
 6. Primer commit. El remoto debe ser privado del usuario: preguntá, no lo crees por tu cuenta.
 
 ### 2. Adoptar centro existente
-No reestructures. Revisá qué falta del mínimo (normalmente el manifiesto), proponelo y agregalo
-tras aprobación. Si hay tablas de repos o reglas de repos en otros documentos o en la memoria,
+No reestructures. Revisá qué falta del mínimo (normalmente el manifiesto y, si hay documentación
+general, la sección «Por llevar a la documentación general» de `pendientes.md`), proponelo y
+agregalo tras aprobación. Si hay tablas de repos o reglas de repos en otros documentos o en la memoria,
 pasalas al manifiesto y dejá un enlace.
 
 ### 3. Abrir sesión (estado del proyecto)
