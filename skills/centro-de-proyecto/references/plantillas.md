@@ -24,6 +24,8 @@ equipo.
 
 ## Manifiesto
 
+Modo: separado
+
 | Pieza | Ruta | Dentro de | Disponibilidad | Dueño | Rama base | Contiene | Reglas |
 |---|---|---|---|---|---|---|---|
 | <centro> | `.` | | local | propio | main | este centro | — |
@@ -68,6 +70,44 @@ tarea del plan>. (Solo anotado: la skill no lo consulta.)
 3. Lo que deba llegar a la documentación general se anota en `pendientes.md`, sección «Por llevar
    a la documentación general».
 ```
+
+### Variante modo integrado
+
+Cambia la presentación, la línea de modo y las rutas; el resto del README es igual.
+
+```md
+Esta carpeta es el **centro** del proyecto: donde se piensa, decide, planea y dirige el trabajo
+de este repo. Se comparte con quien vea el repo; lo personal va en `privado/`, que git ignora.
+
+## Manifiesto
+
+Modo: integrado — carpeta `centro/` en <repo>, decidido por <quién> el AAAA-MM-DD
+
+| Pieza | Ruta | Dentro de | Disponibilidad | Dueño | Rama base | Contiene | Reglas |
+|---|---|---|---|---|---|---|---|
+| centro | `.` | <repo> | local | <propio/empresa> | main | este centro (carpeta) | commits `docs(centro):` |
+| frontend | `../frontend` | <repo> | local | <propio/empresa> | main | frontend | — |
+| backend | `../backend` | <repo> | local | <propio/empresa> | main | backend | — |
+```
+
+El dueño de todas las filas es el del repo. La rama base sale de git, no se asume `main`. En la
+tabla «Contenido» se agregan:
+
+```md
+| `.gitignore` | Deja `privado/` fuera de git |
+| `privado/` | Solo en esta máquina: lo personal y lo que nadie debe ver todavía |
+```
+
+### `.gitignore` del centro (solo integrado)
+
+```
+privado/
+```
+
+### `privado/bitacora.md` (solo integrado)
+
+Misma plantilla que `bitacora.md`. Encabezado: `# Bitácora privada` y la línea «Solo en esta
+máquina: git la ignora. Lo personal y lo que nadie debe ver todavía.»
 
 ---
 

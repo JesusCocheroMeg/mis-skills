@@ -1,6 +1,6 @@
 ---
 name: centro-de-proyecto
-description: Úsala cuando el usuario quiera crear, adoptar o abrir el repo centro de un proyecto (su espacio privado junto a los repos de código), arrancar el día o pedir el estado de un proyecto con varios repos, guardar fuentes que entregó un cliente o equipo, delegar trabajo a agentes en otros repos del proyecto, o hacer commit o PR en un repo que es del cliente o del equipo. También cuando el usuario cuenta lo que pasó en un proyecto (una reunión, un mensaje del cliente, un cambio, un problema), pregunta qué sigue, quiere preparar o cerrar una reunión, necesita que le expliquen algo para avanzar o busca herramientas para el proyecto. También ante menciones de centro, manifiesto, fuentes, bitácora o documentación general.
+description: Úsala cuando el usuario quiera crear, adoptar o abrir el repo centro de un proyecto (su espacio privado junto a los repos de código, o una carpeta dentro del mismo repo), arrancar el día o pedir el estado de un proyecto con varios repos, guardar fuentes que entregó un cliente o equipo, delegar trabajo a agentes en otros repos del proyecto, o hacer commit o PR en un repo que es del cliente o del equipo. También cuando el usuario cuenta lo que pasó en un proyecto (una reunión, un mensaje del cliente, un cambio, un problema), pregunta qué sigue, quiere preparar o cerrar una reunión, necesita que le expliquen algo para avanzar o busca herramientas para el proyecto. También ante menciones de centro, manifiesto, fuentes, bitácora o documentación general.
 argument-hint: "[crear | adoptar | abrir sesión | contar | reunión | explicar | delegar | fuentes]"
 ---
 
@@ -17,8 +17,9 @@ que el manifiesto declara. Lo que hay en el centro **nunca** termina en un repo 
 └── <otro-repo>/
 ```
 
-Esa disposición es la convención. Un repo en otra ruta es una excepción válida y se anota en el
-manifiesto.
+Esa disposición es la convención (modo **separado**). Un repo en otra ruta es una excepción
+válida y se anota en el manifiesto. En proyectos chicos el centro también puede ser una carpeta
+dentro del mismo repo del código (modo **integrado**, ver «Modo»).
 
 El centro también es la **memoria y el copiloto** del proyecto: Jesús cuenta lo que va pasando,
 el centro lo guarda como historia y responde con lo que sigue (flujos 7 a 9).
@@ -28,8 +29,10 @@ Esta skill define **dónde** está todo. **Cómo** se desarrolla un módulo es d
 
 ## Cómo reconocer un centro
 
-Un repo es un centro si su `README.md` tiene la sección `## Manifiesto`. Si no la tiene y el
-usuario quiere trabajar así, es el flujo **Crear** (repo nuevo) o **Adoptar** (repo existente).
+Un repo es un centro si su `README.md` tiene la sección `## Manifiesto`. Si no, buscá una
+carpeta en la raíz del repo cuyo `README.md` tenga `## Manifiesto` y la línea `Modo: integrado`:
+ese es un centro integrado. Si no hay ninguno y el usuario quiere trabajar así, es el flujo
+**Crear** (centro nuevo) o **Adoptar** (centro existente).
 
 El contexto puede ser **completo o parcial**: todos los repos clonados, solo algunos, solo
 documentación o nada de código. Nunca asumas acceso a algo que el manifiesto no marca `local`.
@@ -38,8 +41,37 @@ documentación o nada de código. Nunca asumas acceso a algo que el manifiesto n
 
 | Eje | Valores | Qué cambia |
 |---|---|---|
-| Para quién | empresa · cliente | cliente: dueño `cliente` en sus repos (revisión obligatoria) |
+| Para quién | personal · empresa · cliente | personal: dueño `propio`; cliente: dueño `cliente` en sus repos (revisión obligatoria) |
 | De dónde parte | en evaluación · desde cero · ya empezado · en equipo | en evaluación (propuesta que se está revisando, sin acceso al código): `propuesta.md`, `preguntas.md`, `reuniones/`, repos como `sin acceso`; ya empezado: `diagnostico.md`; en equipo: destino de documentación general |
+
+## Modo: separado o integrado
+
+| Modo | Qué es | Cuándo |
+|---|---|---|
+| **separado** (por defecto) | el centro es su propio repo, hermano de los repos de código | siempre que el usuario no pida otra cosa |
+| **integrado** | el centro es una carpeta (`centro/`, `documentacion/`…) dentro del repo del código, al nivel de `frontend/`, `backend/` | según el dueño del repo, abajo |
+
+El modo integrado depende del **dueño del repo** que lo contendría:
+
+| Dueño | Integrado |
+|---|---|
+| `propio` | sí: al crear, ofrecé los dos modos |
+| `empresa` | solo si el usuario lo pide **explícitamente**. Nunca lo propongas, sugieras ni elijas por comodidad, prisa o tamaño |
+| `cliente` · `equipo` | **nunca**, aunque insista o alguien más lo haga así. Explicá en una línea por qué y ofrecé el modo separado |
+
+En modo integrado el centro se comparte con todos los que ven el repo (un repo `empresa` no es
+ajeno: «ajeno» es `cliente` o `equipo`). Por eso lleva **`privado/`**, ignorada por git (en el
+`.gitignore` del centro): vive solo en la máquina de quien usa la skill, y cada persona del
+equipo tiene la suya. La fila del centro en el manifiesto lleva el dueño del repo que la contiene.
+
+- `privado/bitacora.md`: lo personal (dudas propias, ánimo, relación con el cliente o el
+  equipo) y todo lo que el usuario pida que otros no vean todavía.
+- `privado/reuniones/<mismo nombre que la reunión>.md`: «qué no decir todavía» y notas que no
+  se comparten.
+- Antes de cada commit del centro: stageá solo `<centro>/` (nunca `-a` ni `add -A`);
+  `git check-ignore -q <centro>/privado/` debe salir 0; `git diff --cached --name-only` debe
+  listar solo archivos de `<centro>/` y nada de `privado/`; y lo privado no aparece en el texto
+  de los archivos compartidos ni en el mensaje del commit. Si algo falla, no commitees y avisá.
 
 Cotizaciones: la skill no las crea por su cuenta. Si el usuario ya trae una propuesta comercial,
 vive en `propuesta.md` y se trata como cualquier otro documento del centro.
@@ -64,7 +96,8 @@ desarrollo vertical), `docs/superpowers/` (specs y planes).
 | Algo por hacer o por decidir | `pendientes.md` |
 | Una duda que solo el cliente responde | `preguntas.md` |
 | Una respuesta del cliente | `preguntas.md` (`[x] → respuesta (fecha, quién)`) y lo que cambie en `contexto/`; cita la reunión o el mensaje de donde salió |
-| Quién es quién, cómo trabaja el cliente, contexto personal | `contexto/` |
+| Quién es quién, cómo trabaja el cliente | `contexto/` |
+| Contexto personal (ánimo, dudas propias, relación con el cliente) o algo que «no vea nadie todavía» | separado: `contexto/` o `bitacora.md` · integrado: `privado/bitacora.md` |
 | Una explicación de algo que hay que aprender | `guias/<tema>.md` |
 
 Cada proyecto puede agregar, quitar o renombrar lo no obligatorio, y es válido.
@@ -77,8 +110,11 @@ tal cual.
 
 Tabla en el `README.md` del centro, una fila por pieza del proyecto:
 Pieza · Ruta · Dentro de · Disponibilidad · Dueño · Rama base · Contiene · Reglas.
+Encima de la tabla, la línea `Modo: separado` o
+`Modo: integrado — carpeta <centro>/ en <repo>, decidido por <quién> el AAAA-MM-DD`.
 
-- **Ruta** relativa al centro (`../erp-frontend`).
+- **Ruta** relativa al centro (`../erp-frontend`; en integrado, `../frontend` es una carpeta del
+  mismo repo y su «Dentro de» es ese repo).
 - **Dentro de:** el repo padre si es submódulo. Cada submódulo es su propia fila: suele ser donde
   vive el código real.
 - **Disponibilidad:** `local` · `sin acceso` · `solo docs externas`.
@@ -101,13 +137,18 @@ Debajo van `## Documentación general` (dónde vive, quién la mantiene, cómo s
 ## Flujos
 
 ### 1. Crear centro
-1. Preguntá para quién es y de dónde parte, y el nombre.
-2. Creá la carpeta del centro como hermana de los repos de código y `git init`.
-3. Detectá los repos hermanos y sus submódulos (`.gitmodules`) y proponé el manifiesto; el
-   usuario confirma dueño y reglas.
+1. Preguntá para quién es y de dónde parte, y el nombre. El modo lo decide la tabla de «Modo»:
+   ofrecé integrado solo si el dueño es `propio`; en `empresa`, solo si el usuario ya lo pidió.
+2. **Separado:** creá la carpeta del centro como hermana de los repos de código y `git init`.
+   **Integrado:** creá la carpeta en la raíz del repo, **sin** `git init`, con un `.gitignore`
+   que contenga `privado/`, y la carpeta `privado/`.
+3. Detectá los repos hermanos (en integrado, las carpetas del repo) y sus submódulos
+   (`.gitmodules`) y proponé el manifiesto; el usuario confirma dueño y reglas.
 4. Creá el mínimo más lo que el escenario sugiere.
 5. Si hay material entregado, `fuentes/` con su índice.
-6. Primer commit. El remoto debe ser privado del usuario: preguntá, no lo crees por tu cuenta.
+6. **Separado:** primer commit; el remoto debe ser privado del usuario: preguntá, no lo crees
+   por tu cuenta. **Integrado:** commit en el repo con prefijo `docs(centro):`, siguiendo las
+   reglas de ramas del manifiesto para ese repo, tras el chequeo de `privado/`.
 
 ### 2. Adoptar centro existente
 No reestructures. Revisá qué falta del mínimo (normalmente el manifiesto y, si hay documentación
@@ -121,8 +162,10 @@ pasalas al manifiesto y dejá un enlace.
    `git -C <ruta> branch --show-current`, `git -C <ruta> status --short`,
    `git -C <ruta> log --oneline -3`. Si la ruta no existe, reportala como **faltante**. En un
    repo con submódulos, `git -C <ruta> submodule status`: un `+` es un commit sin registrar en el
-   padre.
-3. Leé `pendientes.md`, las últimas entradas de `bitacora.md` y, si existen, `preguntas.md`,
+   padre. **Integrado:** rama y último commit una sola vez para el repo, y los cambios por pieza
+   con `git status --short -- <ruta>`, separando los del centro de los del código.
+3. Leé `pendientes.md`, las últimas entradas de `bitacora.md` (en integrado, también
+   `privado/bitacora.md`) y, si existen, `preguntas.md`,
    la reunión más próxima en `reuniones/` y `docs/modules/ESTADO.md`.
 4. Entregá el diagnóstico:
 
@@ -143,7 +186,8 @@ su ruta no existe, decilo y no delegues. El encargo al agente incluye:
 - ruta absoluta y rama;
 - las reglas del manifiesto para ese repo;
 - «**No escribas documentación ni planes en este repo. Entregá qué cambiaste, los commits y las
-  pruebas.**» La documentación la escribe solo la sesión del centro;
+  pruebas.**» La documentación la escribe solo la sesión del centro. En integrado:
+  «**Trabajá solo en `<carpeta de la pieza>/`. No toques `<carpeta del centro>/`.**»;
 - si el dueño es `cliente` o `equipo`, el bloque de **revisión antes de commit** (flujo 5, pasos
   1–4) copiado tal cual, con los patrones bloqueados y las excepciones del manifiesto para ese
   repo, y «**No hagas push ni abras PR**». El agente delegado no carga esta skill: lo que no esté
@@ -153,7 +197,8 @@ Esto vale para cualquier forma de delegar, incluidos los implementadores de
 `subagent-driven-development`: su encargo por tarea lleva este mismo bloque.
 
 Cuando el agente termina, la sesión del centro repite la revisión del flujo 5 sobre sus commits
-antes de cualquier push o PR.
+antes de cualquier push o PR. En integrado, además, `git diff --name-only <base>..HEAD --
+<centro>/` debe salir vacío: si el agente tocó el centro, revertilo y avisá.
 
 ### 5. Revisión antes de commit, push o PR en un repo ajeno
 Aplica a toda pieza con dueño `cliente` o `equipo`, la hagas vos o un agente delegado.
@@ -164,8 +209,8 @@ Aplica a toda pieza con dueño `cliente` o `equipo`, la hagas vos o un agente de
    - push o PR: `git -C <ruta> fetch` y `git -C <ruta> diff --name-only origin/<rama base>...HEAD`
      — cubre todo lo commiteado que todavía no está en el remoto.
 2. **Bloqueá** si alguno coincide con: `docs/`, `CLAUDE.md`, `.claude/`, `AGENTS.md`,
-   `docs/superpowers/`, `*plan*.md`, `*spec*.md`, `*design*.md`, o los patrones extra del
-   manifiesto.
+   `docs/superpowers/`, `*plan*.md`, `*spec*.md`, `*design*.md`, cualquier carpeta de un centro
+   (con `README.md` que tenga `## Manifiesto`, o `privado/`), o los patrones extra del manifiesto.
 3. Si el manifiesto declara la ruta como excepción para ese repo, no bloquea.
 4. Bloqueado en un commit: no lo hagas. Sacá esos archivos del stage, llevá su contenido al
    centro si sirve y avisá al usuario qué se bloqueó.
@@ -202,12 +247,12 @@ el proyecto):
    | **Para saber** | conceptos o herramientas que necesita para avanzar, en dos o tres líneas cada uno, con enlace a `guias/` si se escribió una |
 
    Lo personal (dudas, ánimo, relación con el cliente) cuenta como contexto: se anota y pesa en
-   la propuesta.
+   la propuesta. En integrado va a `privado/`, y en **Registré** se aclara qué quedó privado.
 
 ### 8. Reuniones
 **Preparar:** creá `reuniones/AAAA-MM-DD-con-quien.md` con objetivo, agenda, las preguntas de
 `preguntas.md` que corresponden a esa persona, lo que conviene contar o explicar, y lo que no se
-debe decir todavía.
+debe decir todavía (en integrado, esto último va a `privado/reuniones/` con el mismo nombre).
 Si el usuario menciona una reunión con fecha que no tiene archivo, creala preparada sin
 preguntar y decilo en «Registré».
 **Cerrar:** cuando el usuario cuenta cómo fue, llená notas, acuerdos y pendientes del archivo
@@ -236,9 +281,14 @@ un concepto del negocio del cliente) o pide herramientas:
 - Credenciales y secretos no entran al centro.
 - Las reglas de cada repo viven solo en el manifiesto.
 - El diagnóstico revisa git en **todas** las piezas `local`, no solo en el repo actual.
+- Modo integrado: nunca en `cliente` ni `equipo`; en `empresa`, solo si el usuario lo pidió.
+- En integrado, nada de `privado/` se commitea, y `privado/` siempre está en el `.gitignore`.
 
 | Pensamiento | Realidad |
 |---|---|
 | «El usuario pidió commit de todo» | «Todo» es el código. El plan va al centro. |
 | «Es un solo archivo de docs, no pasa nada» | Es justo lo que no puede llegar al cliente. Bloqueá y avisá. |
 | «Ya revisé el repo donde estoy» | El estado del proyecto es el de todas las piezas del manifiesto. |
+| «Es un repo de la empresa y es chico, lo meto integrado» | En `empresa`, integrado solo si el usuario lo pidió. Por defecto, separado. |
+| «Mi compañera lo hace integrado en la empresa» | Eso es un repo `empresa`. Un repo `cliente` o `equipo` nunca. |
+| «Es solo una línea personal, la dejo en la bitácora compartida» | En integrado, lo personal va a `privado/`. |
