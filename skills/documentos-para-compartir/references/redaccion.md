@@ -34,6 +34,30 @@ Propuestas:
 4. Fechas → quién soy (proyectos con resultados medibles, enlaces clicables que se vean como botón).
 5. Cierre: siguiente paso concreto con fecha, oferta si la hay, fecha de la propuesta y vigencia.
 
+Briefs (el encargo para quien va a hacer un trabajo: diseñador, desarrollador, proveedor, agencia):
+1. Portada: qué se encarga, para quién, fecha.
+2. Contexto en 3–5 líneas: qué es el proyecto y por qué se hace ahora.
+3. Objetivo: qué tiene que lograr, de forma que se pueda comprobar («que el cliente pueda pagar
+   desde el celular», no «mejorar la experiencia»).
+4. Para quién es: el usuario final, en palabras simples.
+5. Alcance: **qué incluye y qué no incluye**, lado a lado (`.cmp` o dos tarjetas).
+6. Entregables y fechas; restricciones (presupuesto, tecnología, marca); quién aprueba.
+7. Cómo se sabe que está terminado (criterios de aceptación) y preguntas abiertas.
+Si «brief» puede ser también un resumen para un jefe («pásame un brief del proyecto»), pregunta
+cuál de los dos es; el resumen sigue la estructura de informe corto.
+
+Benchmarks (comparar herramientas, proveedores, competidores o el rendimiento de opciones):
+1. Portada y **En un minuto**: qué se comparó, cuál se recomienda y por qué, en una frase cada uno.
+2. Qué se comparó y con qué criterios, cada criterio explicado en lenguaje simple y con su peso
+   si lo tiene («precio: lo que cuesta al mes con 10 usuarios»).
+3. Tabla comparativa (`.cmp c3`/`c4`), con la recomendada resaltada.
+4. Una lámina por opción finalista: para qué sirve mejor, en qué se queda corta.
+5. Recomendación y **cuándo convendría otra** («si el equipo crece a más de 50 personas, B»).
+6. Fuentes con fecha de consulta (precios y funciones cambian) y, en el anexo técnico, el método:
+   versiones, entorno, cuántas mediciones y cómo se midió, para que alguien pueda repetirlo.
+Cada cifra sale de una fuente o de una medición que hiciste; si no la tienes, `por confirmar`.
+No compares con información de memoria sin decirlo.
+
 Resúmenes de reunión: portada y una o dos láminas con acuerdos, pendientes con responsable y
 fecha, y próxima reunión. Solo lo que se dijo en la reunión; lo interno (preocupaciones, estrategia)
 no va.

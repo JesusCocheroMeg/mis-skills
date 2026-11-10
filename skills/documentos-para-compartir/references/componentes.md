@@ -54,6 +54,17 @@ la grilla de escritorio).
 </div>
 ```
 
+Con 3 o 4 opciones (benchmark), agrega `c3` o `c4`. La opción recomendada lleva `us` en el encabezado
+y `us-cell` en sus celdas; las demás, `<span>` normal. Con más de 4 opciones, divide en dos láminas o
+deja en la tabla solo las finalistas.
+
+```html
+<div class="cmp c3">
+  <div class="h"><span></span><span>Opción A</span><span class="us">Opción B · recomendada</span><span>Opción C</span></div>
+  <div><b>Precio al mes</b><span>$ 40 USD</span><span class="us-cell">$ 25 USD</span><span>Gratis</span></div>
+</div>
+```
+
 ## Estados (qué está afectado)
 
 ```html

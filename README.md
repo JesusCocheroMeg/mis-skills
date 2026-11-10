@@ -7,7 +7,7 @@ Colección de skills personalizadas para Claude Code.
 | Skill | Para qué sirve |
 |-------|----------------|
 | [centro-de-proyecto](skills/centro-de-proyecto/SKILL.md) | Crear, adoptar o abrir el repo centro de un proyecto: estado multi-repo, fuentes del cliente, delegación a agentes, commits/PR en repos ajenos. |
-| [documentos-para-compartir](skills/documentos-para-compartir/SKILL.md) | Propuestas, informes y resúmenes para gente no técnica, con el diseño de cada proyecto, exportados a web, HTML y PDF (láminas 1280×720). |
+| [documentos-para-compartir](skills/documentos-para-compartir/SKILL.md) | Propuestas, informes, resúmenes, briefs y benchmarks para gente no técnica, con el diseño de cada proyecto, exportados a web, HTML y PDF (láminas 1280×720); también README de repositorios. |
 | [desarrollo-modular-vertical](skills/desarrollo-modular-vertical/SKILL.md) | Desarrollo por módulos, verticales y versiones: iniciar, auditar, planificar, ajustar y cerrar. |
 | [prompt-builder](skills/prompt-builder/SKILL.md) | Crear o revisar prompts de implementación para features, módulos o endpoints (sin implementar). |
 | [reporte-daily](skills/reporte-daily/SKILL.md) | Reporte diario del daily (Hoy estoy en / Me frena / Necesito a), resumido y en lenguaje no técnico. ⚠️ Vive en claude.ai (ver abajo). |

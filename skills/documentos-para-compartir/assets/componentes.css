@@ -112,6 +112,10 @@ p{margin:0}
 .cmp b{font-weight:700}
 .cmp .them{color:var(--muted)}
 .cmp .us-cell{background:var(--accent-soft);font-weight:600}
+/* Comparación de 3 o 4 opciones (benchmark): .cmp.c3 / .cmp.c4. En celular se desliza en horizontal
+   y conserva el encabezado, para que cada celda siga sabiendo a qué opción pertenece. */
+.cmp.c3 > div{grid-template-columns:170px repeat(3,1fr)}
+.cmp.c4 > div{grid-template-columns:150px repeat(4,1fr)}
 
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chips span{font-size:.85rem;font-weight:600;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--slide)}
@@ -142,6 +146,14 @@ p{margin:0}
   .cmp > div{grid-template-columns:1fr 1fr}
   .cmp > div > :first-child{grid-column:1/-1;padding-bottom:0}
   .cmp .h > :first-child{display:none}
+}
+@media (max-width:860px){
+  .cmp.c3,.cmp.c4{overflow-x:auto}
+  .cmp.c3 > div,.cmp.c4 > div{min-width:620px}
+  .cmp.c3 > div{grid-template-columns:130px repeat(3,1fr)!important}
+  .cmp.c4 > div{grid-template-columns:120px repeat(4,1fr)!important}
+  .cmp.c3 > div > :first-child,.cmp.c4 > div > :first-child{grid-column:auto;padding-bottom:14px}
+  .cmp.c3 .h > :first-child,.cmp.c4 .h > :first-child{display:block}
 }
 @media (max-width:560px){
   .g2,.g3,.g4{grid-template-columns:1fr}

@@ -11,6 +11,9 @@ html.pm .tl .pt{grid-row:auto!important}
 html.pm .cmp>div{grid-template-columns:170px 1fr 1fr!important}
 html.pm .cmp>div>:first-child{grid-column:auto!important;padding-bottom:14px!important}
 html.pm .cmp .h>:first-child{display:block!important}
+html.pm .cmp.c3>div{grid-template-columns:170px repeat(3,1fr)!important;min-width:0!important}
+html.pm .cmp.c4>div{grid-template-columns:150px repeat(4,1fr)!important;min-width:0!important}
+html.pm .cmp.c3,html.pm .cmp.c4{overflow:hidden!important}
 html.pm .bar-row{grid-template-columns:200px 1fr!important;gap:16px!important}
 html.pm .rows>div{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr)!important;gap:18px!important}
 html.pm .agenda{grid-template-columns:repeat(2,minmax(0,1fr))!important}

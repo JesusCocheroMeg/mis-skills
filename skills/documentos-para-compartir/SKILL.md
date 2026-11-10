@@ -3,11 +3,13 @@ name: documentos-para-compartir
 description: >-
   Crea documentos para compartir con clientes, jefes o personas no técnicas —propuestas, cotizaciones
   presentadas, informes (de seguridad, de avance, de diagnóstico), resúmenes de reunión, explicaciones,
-  planes— con buen diseño y fáciles de entender, como láminas exportadas a web (artefacto), HTML y PDF.
+  planes, briefs, benchmarks o comparativas, y README de un repositorio— con buen diseño y fáciles de
+  entender, como láminas exportadas a web (artefacto), HTML y PDF, o como Markdown en el caso del README.
   El diseño lo define cada proyecto (diseno.md) o el pedido. Úsala siempre que Jesús pida armar,
   «montar», «hacer bonito», exportar o ajustar un documento o presentación para enviarle a alguien
   (aunque no diga «documento»: «hazme el informe para el cliente», «pásalo a PDF», «la propuesta para el
-  cliente», «un resumen que entienda gerencia»), y también cuando pida cambios a uno ya hecho con
+  cliente», «un resumen que entienda gerencia», «arma el brief para el diseñador», «compara estas
+  herramientas», «hazle un README a este repo»), y también cuando pida cambios a uno ya hecho con
   esta skill («cambia la cifra y exporta de nuevo»).
 ---
 
@@ -22,6 +24,11 @@ hechos. Se arman como **láminas** (secciones `<section class="slide">`) y salen
 | **Web** (artefacto privado) | revisarlo en el navegador o compartir un enlace | Artifact tool con la fuente |
 | **HTML** | un archivo que se abre en cualquier lado | `scripts/exportar.py` |
 | **PDF** | enviar por WhatsApp o correo, imprimir | `scripts/exportar.py` (láminas de 1280×720) |
+
+**Tipo de documento.** Informes, propuestas, resúmenes, briefs y benchmarks son láminas: su
+estructura está en `references/redaccion.md` (benchmark: `--tipo informe`; brief: `--tipo corto`).
+Un **README** es otra cosa: Markdown en la raíz del repositorio, sin láminas ni exportación. Para
+README sigue `references/readme.md` en vez de las secciones 2 a 4.
 
 **Formatos:** por defecto los tres. Decide según el pedido (si solo va por WhatsApp, el PDF es lo
 importante; si es para revisar juntos, la web) y dilo en una línea. Si Jesús pide uno concreto o
