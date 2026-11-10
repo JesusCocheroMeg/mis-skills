@@ -1,0 +1,20 @@
+/* Reglas que fuerzan la grilla de escritorio al imprimir (Chrome aplica los media queries de celular al ancho de la página). */
+html.pm .g2{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+html.pm .g3{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+html.pm .g4{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+html.pm .split{grid-template-columns:.9fr 1.1fr!important}
+html.pm .tl{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:12px!important}
+html.pm .tl::before{left:0!important;right:0!important;top:16px!important;bottom:auto!important;width:auto!important;height:2px!important}
+html.pm .tl>div{grid-template-columns:none!important}
+html.pm .tl>div>:not(.pt){grid-column:auto!important}
+html.pm .tl .pt{grid-row:auto!important}
+html.pm .cmp>div{grid-template-columns:170px 1fr 1fr!important}
+html.pm .cmp>div>:first-child{grid-column:auto!important;padding-bottom:14px!important}
+html.pm .cmp .h>:first-child{display:block!important}
+html.pm .bar-row{grid-template-columns:200px 1fr!important;gap:16px!important}
+html.pm .rows>div{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr)!important;gap:18px!important}
+html.pm .agenda{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+html.pm .status>div{grid-template-columns:minmax(0,1fr) 200px minmax(0,1.6fr)!important;gap:16px!important;padding:11px 18px!important}
+html.pm .status .h{display:grid!important}
+html.pm .status.ev>div{grid-template-columns:minmax(0,1.2fr) 150px 130px minmax(0,1fr)!important;padding:8px 18px!important}
+html.pm .status.ev .h{display:grid!important}
