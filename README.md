@@ -10,6 +10,7 @@ Colección de skills personalizadas para Claude Code.
 | [documentos-para-compartir](skills/documentos-para-compartir/SKILL.md) | Propuestas, informes, resúmenes, briefs y benchmarks para gente no técnica, con el diseño de cada proyecto, exportados a web, HTML y PDF (láminas 1280×720); también README de repositorios. |
 | [desarrollo-modular-vertical](skills/desarrollo-modular-vertical/SKILL.md) | Desarrollo por módulos, verticales y versiones: iniciar, auditar, planificar, ajustar y cerrar. |
 | [prompt-builder](skills/prompt-builder/SKILL.md) | Crear o revisar prompts de implementación para features, módulos o endpoints (sin implementar). |
+| [contenido-redes](skills/contenido-redes/SKILL.md) | Ideas, guiones, ganchos y calendario para videos sobre programación, sacados de casos reales de sus otros espacios y sin exponer clientes. |
 | [reporte-daily](skills/reporte-daily/SKILL.md) | Reporte diario del daily (Hoy estoy en / Me frena / Necesito a), resumido y en lenguaje no técnico. ⚠️ Vive en claude.ai (ver abajo). |
 
 ## Estructura
