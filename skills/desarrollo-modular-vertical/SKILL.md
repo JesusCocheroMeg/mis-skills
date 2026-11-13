@@ -1,6 +1,6 @@
 ---
 name: desarrollo-modular-vertical
-description: Úsala cuando el usuario quiera iniciar un módulo, recuperar uno ya comenzado, auditar un prototipo, planificar una versión, diseñar o continuar una vertical, introducir un ajuste, revisar el avance o cerrar una vertical o versión. También ante menciones de módulos, verticales, versiones, decisiones, roadmap, alcance o implementación progresiva.
+description: Úsala cuando el usuario quiera arrancar un proyecto o un módulo, recuperar uno ya comenzado, auditar un prototipo, planificar una versión, diseñar o continuar una vertical, introducir un ajuste, revisar el avance, revisar un PR o cerrar una vertical o versión. También ante menciones de módulos, verticales, versiones, decisiones, roadmap, alcance, alcance global o final, capacidades futuras, Definition of Done, criterios de revisión, revisar o aprobar un pull request, documentación desactualizada o implementación progresiva.
 argument-hint: "[módulo, escenario o acción]"
 ---
 
@@ -22,7 +22,17 @@ Lo documentado no es alcance.
 | `decisions.md` | las decisiones y el estado de cada una | estado de verticales o del código |
 | `verticals/<ID>.md` | **ciclo completo de una vertical**: definición, diseño, criterios de aceptación y cierre con evidencia | su propio estado — está en la tabla del README |
 
-Global: `docs/modules/ESTADO.md` — panel de módulos y dependencias.
+Global (una vez por proyecto, junto a `docs/modules/`):
+
+| Archivo | Dueño exclusivo de |
+|---|---|
+| `docs/modules/ESTADO.md` | panel de módulos y dependencias |
+| `docs/definition-of-done.md` | qué se le exige a cada tipo de cambio para aprobar su PR (la acuerda el usuario al arrancar, Escenario K) |
+| `docs/alcance-global.md` | el alcance final del proyecto: capacidades futuras y los **cuidados baratos** que todo cambio respeta desde hoy |
+
+**La documentación vive en el repo** y es parte del cambio: lo que cambia comportamiento, datos,
+permisos o decisiones actualiza su documento **en el mismo PR**. Una documentación que contradice
+el código es un defecto del PR, no una tarea para después.
 
 **Un archivo fuera de esta lista es una excepción y hay que justificarla** (por ejemplo, un
 contrato de frontera entre dos módulos, o `verticals/ajustes-menores.md` como bitácora de
@@ -30,7 +40,8 @@ ajustes triviales — ver Escenario H). No existen `changelog.md`, `audit.md` ni
 `verticals/INDEX.md`: la evidencia de cierre vive en el archivo de la vertical, la deuda
 heredada en `roadmap.md`, y el estado en la tabla del `README.md`.
 
-**Plantillas obligatorias:** `references/plantillas.md`. Leelo **antes** de crear o
+**Plantillas obligatorias:** `references/plantillas.md` para el módulo y `references/proyecto.md`
+para la DoD, el alcance global y el informe de revisión de PR. Leelo **antes** de crear o
 reestructurar cualquiera de estos archivos. Se copian sus encabezados tal cual: no se
 inventan secciones ni se renombran.
 
@@ -49,6 +60,8 @@ silencio: informala en el diagnóstico.
 
 ## Lectura mínima para reconstruir el estado
 
+0. Que existan `docs/definition-of-done.md` y `docs/alcance-global.md`. Si falta alguno, el
+   escenario es **K** antes que cualquier otro (salvo **L**, que avisa y usa la DoD base).
 1. `docs/modules/ESTADO.md`
 2. `docs/modules/<module>/README.md` — reglas, tabla de verticales y siguiente paso
 
@@ -78,10 +91,12 @@ directamente relacionado con la solicitud.
 
 | # | Se usa cuando | Produce | Prohibido | Superpower |
 |---|---|---|---|---|
+| **K. Arrancar proyecto** | no existe `docs/definition-of-done.md` o `docs/alcance-global.md` | los dos archivos, acordados con el usuario con las preguntas de `references/proyecto.md`, y una propuesta de automatización (plantilla de PR, checks de CI, protección de rama) para que la apruebe | crear módulos o escribir código antes de tener los dos archivos; inventar el alcance final o la DoD sin preguntar | `brainstorming` |
+| **L. Revisar PR** | el usuario pide revisar, validar o aprobar un PR, una rama o un diff | el informe de revisión de `references/proyecto.md`: tipo del PR con su evidencia, casillas de la DoD de ese tipo, documentación contra código, cuidados del alcance global y veredicto | aprobar sin leer el diff completo; exigirle a un PR trivial lo de una función; dar por cumplida una casilla sin evidencia | `requesting-code-review`, `verification-before-completion` |
 | **A. Módulo nuevo** | no hay código ni documentación suficiente | `vision.md`, `roadmap.md`, una primera versión pequeña en `current-version.md` y el `README.md` con sus verticales en `📋 Definida` | escribir código | `brainstorming` |
 | **B. Auditar prototipo** | hay código anterior a esta metodología | cada parte clasificada en conservar / ajustar / reubicar / reconstruir / eliminar, en la sección «Deuda heredada» de `roadmap.md`, fechada | modificar código; borrar el prototipo sin auditarlo | — |
 | **C. Planificar versión** | hay visión y roadmap, pero no versión activa clara | `current-version.md`: objetivo, qué entra, qué no, criterio de cierre y las verticales | comprometer una versión sin dividirla en verticales | — |
-| **D. Diseñar vertical** | la vertical existe y no tiene diseño aprobado | `verticals/<ID>.md` con diseño y criterios de aceptación; entidades, endpoints, permisos, validaciones, riesgos y regresiones; decisiones nuevas en `decisions.md` | escribir código | `brainstorming` |
+| **D. Diseñar vertical** | la vertical existe y no tiene diseño aprobado | `verticals/<ID>.md` con diseño y criterios de aceptación; entidades, endpoints, permisos, validaciones, riesgos y regresiones; **los cuidados de `alcance-global.md` que toca y cómo los cumple**; decisiones nuevas en `decisions.md` | escribir código; un diseño que rompe un cuidado del alcance global sin decisión aprobada | `brainstorming` |
 | **E. Planificar vertical** | el diseño está aprobado y no hay plan | plan por tareas: objetivo, archivos, cambios, pruebas, resultado esperado, commit sugerido | implementar; salir del alcance de la vertical activa | `writing-plans` |
 | **F. Implementar** | diseño **y** plan aprobados | la primera tarea incompleta, sus pruebas ejecutadas, el diff revisado y un commit pequeño | adelantar tareas; refactorizar fuera del alcance | `test-driven-development`, `subagent-driven-development` |
 | **G. Continuar vertical** | la vertical ya está en desarrollo | la siguiente tarea pendiente, tras confirmar la última completada contra Git y las pruebas | repetir tareas hechas, salvo que la evidencia muestre un error | — |
@@ -126,7 +141,17 @@ está descrito arriba.
 la tabla de estados del `README.md`, no pasa por los estados 💡📋🎨👍🔨✅ y nunca se cierra (no
 aplica el Escenario I). Solo crece.
 
-En **I**, tocá `roadmap.md` o `current-version.md` **solo si cambió el alcance o una
+En **K**, si el proyecto ya tiene código pero le faltan los dos archivos, se hacen igual antes de
+la siguiente vertical: la DoD y el alcance global se acuerdan una vez y valen para todos los
+módulos. Si el repo es un centro, viven en el centro junto a `docs/modules/`, y la plantilla de PR
+de cada repo de código los enlaza.
+
+En **L**, el tipo del PR sale de lo observable (archivos tocados, tamaño, prefijo del commit) con
+las reglas de la DoD del proyecto; si el proyecto no tiene DoD, se usa la base de
+`references/proyecto.md` y el informe lo dice. Las pruebas se ejecutan o se lee el resultado del
+CI; una casilla sin evidencia queda «sin verificar», nunca «cumple».
+
+En **I**, la verificación incluye la DoD del tipo «vertical» y los cuidados del alcance global. Tocá `roadmap.md` o `current-version.md` **solo si cambió el alcance o una
 prioridad**. Reflejar avance no es motivo. Y si la verificación técnica pasó pero el usuario
 todavía no lo validó en el navegador, decilo en la fila del README: no la presentes como
 validada.
@@ -173,5 +198,11 @@ continuá sin pedir una confirmación repetida.
 - **No crear archivos fuera de la estructura obligatoria** ni resucitar `changelog.md`,
   `audit.md` o `verticals/INDEX.md`.
 - Al iniciar sesión, reconstruir el estado con la lectura mínima y con Git antes de continuar.
+- **Lo que se entrega hoy no le cierra la puerta al alcance final.** Todo diseño y todo PR
+  cumple los cuidados de `docs/alcance-global.md`. Si cumplir uno cuesta trabajo real, se le
+  pregunta al usuario; no se salta en silencio.
+- **Un PR no se aprueba si su documentación contradice su código**, aunque las pruebas pasen.
+- Lo que exige un PR depende de su tipo según la DoD: a un cambio trivial no se le piden pruebas
+  nuevas, a uno que toca datos o permisos no se le perdona ninguna casilla.
 - En un centro, los agentes delegados en repos de código no escriben documentación: entregan
   cambios, commits y pruebas, y solo la sesión del centro escribe en `docs/modules/`.
