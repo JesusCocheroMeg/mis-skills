@@ -10,6 +10,11 @@ Un **centro** es un repo git privado de Jesús que vive en la carpeta del proyec
 repos de código. Ahí se piensa, se decide, se planea y se dirige; el código se toca en los repos
 que el manifiesto declara. Lo que hay en el centro **nunca** termina en un repo ajeno.
 
+**El centro es siempre privado de Jesús**, sin importar el dueño del repo de código. Su planeación
+como líder, la bitácora, los pendientes, las reuniones, lo de negocio (dinero, acuerdos, comisiones,
+propuestas) y los planes y prompts de IA (`docs/superpowers/`) no salen del centro a ningún repo,
+tampoco a uno `empresa`.
+
 ```
 <proyecto>/
 ├── <centro>/          ← este repo (en Nova: nova-plataforma)
@@ -125,6 +130,19 @@ Encima de la tabla, la línea `Modo: separado` o
 Debajo van `## Documentación general` (dónde vive, quién la mantiene, cómo se actualiza) y
 `## Gestor de tareas` (Plane, Jira…; solo anotado, la skill no lo consulta).
 
+## Documentación del producto en el repo del equipo
+
+Si el manifiesto declara `Documentación del producto: <repo>/docs/` (línea debajo de la tabla), la
+documentación técnica (`docs/modules/`, arquitectura, decisiones técnicas, guías técnicas) vive en
+ese repo y no en el centro. Así la ve el equipo y la puede leer la IA de documentación.
+
+- Cada documento vive en un solo lugar: lo que se mueve se borra del centro y el centro lo enlaza.
+- Antes de mover un archivo, se revisa: se quitan las menciones a acuerdos, montos y enlaces a
+  material de negocio, y se le muestra a Jesús qué se limpió.
+- Las decisiones se separan: las de negocio se quedan en el centro y las técnicas van al repo.
+- Solo aplica a repos con dueño `propio` o `empresa`. En `cliente` o `equipo`, la ruta `docs/` además
+  tiene que estar declarada como excepción del flujo 5.
+
 ## Fuentes
 
 - `fuentes/` guarda tal cual lo que entregó el cliente o el equipo.
@@ -185,7 +203,7 @@ Solo sobre piezas `local` cuya ruta existe. Si la pieza es `sin acceso`, `solo d
 su ruta no existe, decilo y no delegues. El encargo al agente incluye:
 - ruta absoluta y rama;
 - las reglas del manifiesto para ese repo;
-- «**No escribas documentación ni planes en este repo. Entregá qué cambiaste, los commits y las
+- «**No escribas planes en este repo, ni documentación salvo en `<repo>/docs/` si el manifiesto la declara ahí. Entregá qué cambiaste, los commits y las
   pruebas.**» La documentación la escribe solo la sesión del centro. En integrado:
   «**Trabajá solo en `<carpeta de la pieza>/`. No toques `<carpeta del centro>/`.**»;
 - si el dueño es `cliente` o `equipo`, el bloque de **revisión antes de commit** (flujo 5, pasos

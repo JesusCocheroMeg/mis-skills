@@ -68,7 +68,8 @@ silencio: informala en el diagnóstico.
 Más `git log --oneline -5`, `git status` y la rama actual. Eso es todo el estado.
 
 **Si el repo es un centro** (su `README.md` tiene `## Manifiesto`, ver skill `centro-de-proyecto`):
-`docs/modules/` vive en el centro y el código en los repos del manifiesto. La lectura de git
+`docs/modules/` vive en el centro y el código en los repos del manifiesto, salvo que el manifiesto
+declare «Documentación del producto» en un repo: entonces `docs/modules/` vive ahí. La lectura de git
 (rama, `git status`, últimos commits) se hace en **cada repo del manifiesto que toca la
 vertical**, submódulos incluidos (`git -C <ruta> …`), no solo en el centro.
 
@@ -143,7 +144,8 @@ aplica el Escenario I). Solo crece.
 
 En **K**, si el proyecto ya tiene código pero le faltan los dos archivos, se hacen igual antes de
 la siguiente vertical: la DoD y el alcance global se acuerdan una vez y valen para todos los
-módulos. Si el repo es un centro, viven en el centro junto a `docs/modules/`, y la plantilla de PR
+módulos. Si el repo es un centro, viven junto a `docs/modules/` (en el centro o en el repo que el manifiesto
+declare como «Documentación del producto»), y la plantilla de PR
 de cada repo de código los enlaza.
 
 En **L**, el tipo del PR sale de lo observable (archivos tocados, tamaño, prefijo del commit) con
@@ -208,4 +210,5 @@ continuá sin pedir una confirmación repetida.
 - Lo que exige un PR depende de su tipo según la DoD: a un cambio trivial no se le piden pruebas
   nuevas, a uno que toca datos o permisos no se le perdona ninguna casilla.
 - En un centro, los agentes delegados en repos de código no escriben documentación: entregan
-  cambios, commits y pruebas, y solo la sesión del centro escribe en `docs/modules/`.
+  cambios, commits y pruebas, y solo la sesión del centro escribe en `docs/modules/` (también cuando vive en el repo declarado
+  como «Documentación del producto»).
