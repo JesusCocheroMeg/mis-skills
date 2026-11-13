@@ -149,7 +149,10 @@ de cada repo de código los enlaza.
 En **L**, el tipo del PR sale de lo observable (archivos tocados, tamaño, prefijo del commit) con
 las reglas de la DoD del proyecto; si el proyecto no tiene DoD, se usa la base de
 `references/proyecto.md` y el informe lo dice. Las pruebas se ejecutan o se lee el resultado del
-CI; una casilla sin evidencia queda «sin verificar», nunca «cumple».
+CI; si no se puede ninguna de las dos, lo que dice el usuario cuenta y la evidencia lo cita así.
+Una casilla sin evidencia queda «sin verificar», nunca «cumple». L no lleva el diagnóstico del
+Paso 5: su informe ya es el diagnóstico. Si el diff contradice un documento, el veredicto es
+«Pedir cambios» y se pregunta cuál de los dos es el correcto; no se elige por el usuario.
 
 En **I**, la verificación incluye la DoD del tipo «vertical» y los cuidados del alcance global. Tocá `roadmap.md` o `current-version.md` **solo si cambió el alcance o una
 prioridad**. Reflejar avance no es motivo. Y si la verificación técnica pasó pero el usuario

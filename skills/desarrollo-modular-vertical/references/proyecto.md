@@ -7,8 +7,14 @@ cerrar (I) para consultar los cuidados del alcance global.
 
 ## K. Preguntas para arrancar el proyecto
 
-Se hacen de a pocas (con la herramienta de preguntas si existe), con una opción recomendada
-primero. Las respuestas llenan los dos archivos; nada se inventa.
+Antes de preguntar: si no hay repo o carpeta `docs/`, preguntá primero dónde vivirá la
+documentación (en el repo del código o en un centro, ver skill `centro-de-proyecto`).
+
+Se hacen de a pocas, en el registro con que habla el usuario (tú o vos), con la herramienta de
+preguntas si existe y, si no, en el chat. Lo que el usuario ya dijo no se pregunta de nuevo: se
+confirma en una línea. Se recomienda una opción solo en preguntas técnicas (DoD, cuidados); el
+alcance de negocio lo decide el usuario sin recomendación. Las respuestas llenan los dos
+archivos; nada se inventa.
 
 **Alcance final** (llena `docs/alcance-global.md`):
 
@@ -84,7 +90,8 @@ toca, no por lo que dice el título.
 | Función | Agrega o cambia comportamiento; suele cerrar una vertical | `feat:` |
 | Sensible | Toca esquema o migraciones, permisos, autenticación, datos personales, dependencias nuevas o infraestructura | Cualquier prefijo |
 
-Si un PR cae en dos tipos, se le exige el más estricto.
+Si un PR cae en dos tipos, se le exige el más estricto. Si no hay documentación del módulo para
+comprobar las condiciones del ajuste trivial, el PR no es trivial: es un arreglo.
 
 ## Casillas por tipo
 
@@ -94,10 +101,10 @@ Si un PR cae en dos tipos, se le exige el más estricto.
 | Prueba que habría detectado el error | | ✓ | | |
 | Prueba de cada función nueva o cambiada, incluido el camino que falla | | | ✓ | ✓ |
 | Documentación actualizada en el mismo PR (vertical, tabla de estado, guía de uso) | | si cambia algo visible | ✓ | ✓ |
-| Decisiones nuevas registradas | | | ✓ | ✓ |
+| Decisiones nuevas registradas (hay decisión cuando el cambio altera algo que un documento afirma, como un tope, el esquema o un contrato, o elige entre alternativas) | | | ✓ | ✓ |
 | Cuidados del alcance global respetados | ✓ | ✓ | ✓ | ✓ |
 | Seguridad: entradas validadas, permisos en el servidor, sin secretos en el código o los logs | | ✓ | ✓ | ✓ |
-| Prueba de permisos y de aislamiento de datos | | | si toca datos | ✓ |
+| Prueba de permisos y de aislamiento de datos | | | si toca datos | si toca datos o permisos |
 | Migración aditiva y reversible | | | | si hay migración |
 | Aprobación del dueño de la carpeta | | | | ✓ |
 ```
@@ -132,6 +139,11 @@ primero. Si todo coincide, decilo.>
 ### Observaciones
 <Lo que no bloquea: mejoras, deuda que deja, algo para el roadmap.>
 ```
+
+**Casillas que no aplican:** si el proyecto no tiene `docs/alcance-global.md`, esa casilla queda
+«No aplica» (no bloquea ni baja el veredicto) y la recomendación de hacer el Escenario K va en
+Observaciones. La falta de la línea en `verticals/ajustes-menores.md` de un PR trivial es una
+observación, no un bloqueo.
 
 **Veredicto:** «Pedir cambios» si alguna casilla de su tipo es «No cumple» o la documentación
 contradice el código. «Aprobar con observaciones» si todo cumple pero hay «Sin verificar» que el
