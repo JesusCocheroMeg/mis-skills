@@ -1,6 +1,6 @@
 ---
 name: centro-de-proyecto
-description: Úsala cuando el usuario quiera crear, adoptar o abrir el repo centro de un proyecto (su espacio privado junto a los repos de código, o una carpeta dentro del mismo repo), arrancar el día o pedir el estado de un proyecto con varios repos, guardar fuentes que entregó un cliente o equipo, delegar trabajo a agentes en otros repos del proyecto, o hacer commit o PR en un repo que es del cliente o del equipo. También cuando el usuario cuenta lo que pasó en un proyecto (una reunión, un mensaje del cliente, un cambio, un problema), pregunta qué sigue, quiere preparar o cerrar una reunión, necesita que le expliquen algo para avanzar o busca herramientas para el proyecto. También ante menciones de centro, manifiesto, fuentes, bitácora o documentación general.
+description: Úsala cuando el usuario quiera crear, adoptar o abrir el repo centro de un proyecto (su espacio privado junto a los repos de código, o una carpeta dentro del mismo repo), arrancar el día o pedir el estado de un proyecto con varios repos, guardar fuentes que entregó un cliente o equipo, delegar trabajo a agentes en otros repos del proyecto, o hacer commit o PR en un repo que es del cliente o del equipo. También cuando el usuario cuenta lo que pasó en un proyecto (una reunión, un mensaje del cliente, un cambio, un problema), pregunta qué sigue, quiere preparar o cerrar una reunión, necesita que le expliquen algo para avanzar o busca herramientas para el proyecto. También cuando quiere crear, sincronizar o cambiar el tablero del proyecto (la app en claude.ai para verlo desde el celular). También ante menciones de centro, manifiesto, fuentes, bitácora, documentación general o tablero.
 argument-hint: "[crear | adoptar | abrir sesión | contar | reunión | explicar | delegar | fuentes]"
 ---
 
@@ -143,6 +143,16 @@ ese repo y no en el centro. Así la ve el equipo y la puede leer la IA de docume
 - Solo aplica a repos con dueño `propio` o `empresa`. En `cliente` o `equipo`, la ruta `docs/` además
   tiene que estar declarada como excepción del flujo 5.
 
+## Tablero (opcional)
+
+Algunos centros tienen un **tablero**: una app privada en claude.ai para ver y mover el proyecto
+desde el celular (inicio, ficha del proyecto, tareas, notas y chat con Claude). El centro sigue
+siendo la fuente de verdad. Un centro tiene tablero si su `README.md` tiene la sección `## Tablero`
+con el enlace; si no la tiene, nada de esto aplica.
+
+Para crear, sincronizar o cambiar un tablero, leé `references/tablero.md`. La plantilla es
+`assets/tablero.html`. Se crea solo si el usuario lo pide.
+
 ## Fuentes
 
 - `fuentes/` guarda tal cual lo que entregó el cliente o el equipo.
@@ -167,6 +177,7 @@ ese repo y no en el centro. Así la ve el equipo y la puede leer la IA de docume
 6. **Separado:** primer commit; el remoto debe ser privado del usuario: preguntá, no lo crees
    por tu cuenta. **Integrado:** commit en el repo con prefijo `docs(centro):`, siguiendo las
    reglas de ramas del manifiesto para ese repo, tras el chequeo de `privado/`.
+7. Ofrecé el tablero en una línea. Si dice que no, no lo vuelvas a ofrecer.
 
 ### 2. Adoptar centro existente
 No reestructures. Revisá qué falta del mínimo (normalmente el manifiesto y, si hay documentación
@@ -185,6 +196,9 @@ pasalas al manifiesto y dejá un enlace.
 3. Leé `pendientes.md`, las últimas entradas de `bitacora.md` (en integrado, también
    `privado/bitacora.md`) y, si existen, `preguntas.md`,
    la reunión más próxima en `reuniones/` y `docs/modules/ESTADO.md`.
+   Si el README tiene `## Tablero`, sincronizalo antes del diagnóstico (`references/tablero.md`,
+   «Sincronizar») y sumá al diagnóstico la fila **Tablero**: notas, encargos, tareas y mensajes
+   del chat que entraron.
 4. Entregá el diagnóstico:
 
    | Campo | Contenido |

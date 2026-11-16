@@ -1,0 +1,600 @@
+<title>{{TITULO}}</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: app de una pantalla — menú lateral en escritorio, barra inferior en el celular; vistas Inicio, Proyecto, Tareas, Notas. Marca JC: azul + Manrope */
+:root {
+  --bg: #f4f6fb; --surface: #ffffff; --surface-2: #edf1fa; --fg: #1b2233; --muted: #6b7590;
+  --line: #e1e6f0; --accent: #3a6dff; --accent-fg: #ffffff; --accent-soft: #e4ebff;
+  --ok: #1f8a5b; --ok-soft: #e1f3ea; --warn: #a8620a; --warn-soft: #fbefdc; --bad: #c0392b; --bad-soft: #fbe4e1;
+  --nav-bg: rgba(255,255,255,.86);
+  --font: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0a0f1c; --surface: #121a2c; --surface-2: #16213b; --fg: #eaf0ff; --muted: #9aa7c4;
+  --line: #25304a; --accent: #6a92ff; --accent-fg: #0a0f1c; --accent-soft: #1a2750;
+  --ok: #4cc58c; --ok-soft: #12291f; --warn: #f0b049; --warn-soft: #2e2412; --bad: #ff7a6b; --bad-soft: #321a19;
+  --nav-bg: rgba(18,26,44,.86); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0a0f1c; --surface: #121a2c; --surface-2: #16213b; --fg: #eaf0ff; --muted: #9aa7c4;
+  --line: #25304a; --accent: #6a92ff; --accent-fg: #0a0f1c; --accent-soft: #1a2750;
+  --ok: #4cc58c; --ok-soft: #12291f; --warn: #f0b049; --warn-soft: #2e2412; --bad: #ff7a6b; --bad-soft: #321a19;
+  --nav-bg: rgba(18,26,44,.86); color-scheme: dark }
+
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.5 }
+h1, h2, h3, p { margin: 0 }
+h1, h2, h3 { text-wrap: balance }
+a { color: var(--accent) }
+button { font: inherit; cursor: pointer }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+
+/* Estructura */
+.app { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100vh }
+.side { position: sticky; top: 0; height: 100vh; border-right: 1px solid var(--line); background: var(--surface);
+  padding: 22px 14px; display: flex; flex-direction: column; gap: 22px }
+.logo { font-weight: 800; font-size: 1.05rem; letter-spacing: -.01em; padding: 0 8px; display: flex; flex-direction: column; gap: 2px }
+.logo .b { color: var(--accent) }
+.logo small { font-size: .74rem; color: var(--muted); font-weight: 600 }
+.side nav { display: flex; flex-direction: column; gap: 4px }
+.nav-btn { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 10px; border: 0;
+  background: transparent; color: var(--muted); font-weight: 700; text-align: left; width: 100% }
+.nav-btn svg { width: 19px; height: 19px; flex: none }
+.nav-btn:hover { background: var(--surface-2); color: var(--fg) }
+.nav-btn[aria-current="page"] { background: var(--accent-soft); color: var(--accent) }
+.nav-btn .cnt { margin-left: auto; font-size: .72rem; background: var(--accent); color: var(--accent-fg); border-radius: 999px;
+  padding: 0 7px; min-width: 20px; text-align: center; font-variant-numeric: tabular-nums }
+.nav-btn .cnt:empty { display: none }
+.side .sync { margin-top: auto; font-size: .76rem; color: var(--muted); padding: 0 8px }
+.main { min-width: 0; padding-block: 28px 56px;
+  padding-left: max(28px, env(safe-area-inset-left, 0px)); padding-right: max(28px, env(safe-area-inset-right, 0px)) }
+.view { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px }
+.bottom { display: none }
+
+@media (max-width: 899px) {
+  .app { grid-template-columns: minmax(0, 1fr) }
+  .side { display: none }
+  .main { padding-block: 18px calc(92px + env(safe-area-inset-bottom, 0px));
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+  .bottom { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+    background: var(--nav-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid var(--line);
+    padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)) }
+  .bottom .nav-btn { flex-direction: column; gap: 2px; font-size: .7rem; padding: 6px 2px; position: relative; align-items: center; text-align: center }
+  .bottom .nav-btn .cnt { position: absolute; top: 2px; left: calc(50% + 6px); margin: 0; font-size: .64rem; padding: 0 5px; min-width: 16px }
+  .bottom .nav-btn[aria-current="page"] { background: transparent }
+}
+
+/* Piezas comunes */
+.eyebrow { font-size: .76rem; font-weight: 700; color: var(--muted); letter-spacing: .06em; text-transform: uppercase }
+.title { font-size: 1.7rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.2 }
+.lead { color: var(--muted); max-width: 62ch }
+.head { display: flex; flex-direction: column; gap: 8px }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: .8rem; color: var(--muted) }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; background: var(--surface-2);
+  color: var(--fg); font-size: .78rem; font-weight: 700; text-decoration: none; border: 1px solid var(--line) }
+a.chip:hover { border-color: var(--accent); color: var(--accent) }
+.chip.acc { background: var(--accent-soft); color: var(--accent); border-color: transparent }
+.sec { display: flex; flex-direction: column; gap: 12px }
+.sec-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap }
+.sec-h h2 { font-size: 1.05rem; font-weight: 800 }
+.link-btn { border: 0; background: none; color: var(--accent); font-weight: 700; font-size: .85rem; padding: 0 }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px }
+.msg { background: var(--accent-soft); border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px }
+.msg .who { font-size: .74rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: .06em }
+.msg p { white-space: pre-wrap }
+.empty { padding: 16px; border-radius: 12px; background: var(--surface-2); color: var(--muted); font-size: .9rem }
+
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; text-align: left; color: var(--fg) }
+button.stat:hover { border-color: var(--accent) }
+.stat b { display: block; font-size: 1.6rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.2 }
+.stat span { font-size: .76rem; color: var(--muted); font-weight: 700 }
+@media (max-width: 600px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+
+/* Tareas */
+.list { display: flex; flex-direction: column; gap: 6px }
+.tarea { display: flex; gap: 12px; align-items: flex-start; padding: 11px 13px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px }
+.tarea input { width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--accent); flex: none }
+.tarea .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px }
+.tarea label { font-weight: 700; overflow-wrap: anywhere; cursor: pointer }
+.tarea.hecho label { text-decoration: line-through; color: var(--muted) }
+.tarea .sub { font-size: .82rem; color: var(--muted); overflow-wrap: anywhere }
+.pills { display: flex; gap: 6px; flex-wrap: wrap }
+.pill { font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); color: var(--muted) }
+.p-prio { background: var(--warn-soft); color: var(--warn) }
+.p-bloq { background: var(--bad-soft); color: var(--bad) }
+.p-curso { background: var(--accent-soft); color: var(--accent) }
+.p-ok { background: var(--ok-soft); color: var(--ok) }
+.grupo { display: flex; flex-direction: column; gap: 6px }
+.grupo-h { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 6px }
+.grupo-h h3 { font-size: .95rem; font-weight: 800 }
+.bar { height: 6px; border-radius: 99px; background: var(--surface-2); overflow: hidden; width: 90px; flex: none }
+.bar i { display: block; height: 100%; background: var(--ok); border-radius: 99px }
+.prog { display: flex; align-items: center; gap: 8px; font-size: .76rem; color: var(--muted); font-weight: 700; font-variant-numeric: tabular-nums }
+.filtros { display: flex; gap: 6px; flex-wrap: wrap }
+.filtros button { padding: 6px 13px; border-radius: 999px; font-size: .82rem; font-weight: 700; border: 1px solid var(--line); background: var(--surface); color: var(--fg) }
+.filtros button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-fg) }
+
+/* Notas */
+.composer { display: flex; flex-direction: column; gap: 10px }
+textarea { width: 100%; min-height: 84px; resize: vertical; font: inherit; color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px }
+.row { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap }
+.hint { font-size: .8rem; color: var(--muted) }
+.hint.err { color: var(--bad) }
+.btn { font-weight: 800; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); padding: 10px 16px; min-height: 44px }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg) }
+.btn:disabled { opacity: .5; cursor: default }
+.nota { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px }
+.nota-top { display: flex; justify-content: space-between; gap: 10px; align-items: center }
+.nota time { font-size: .74rem; color: var(--muted); font-weight: 700 }
+.nota p { white-space: pre-wrap; overflow-wrap: anywhere }
+.nota .resp { border-left: 3px solid var(--accent); padding-left: 10px; font-size: .88rem; color: var(--muted) }
+.nota .resp b { color: var(--accent); font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; display: block }
+.x { border: 0; background: none; color: var(--muted); font-size: .8rem; font-weight: 700; padding: 4px 6px }
+.x:hover { color: var(--bad) }
+
+/* Proyecto */
+.grid2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); gap: 10px }
+.pieza { display: flex; flex-direction: column; gap: 6px; padding: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px }
+.pieza-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px }
+.pieza h3 { font-size: .95rem; font-weight: 800; overflow-wrap: anywhere }
+.pieza p { font-size: .86rem; color: var(--muted) }
+.pieza a { font-size: .82rem; font-weight: 700; text-decoration: none; overflow-wrap: anywhere }
+.deflist { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 }
+.deflist div { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-top: 1px solid var(--line) }
+.deflist div:first-child { border-top: 0; padding-top: 0 }
+.deflist dt { font-size: .8rem; font-weight: 800; color: var(--muted) }
+.deflist dd { margin: 0 }
+@media (max-width: 600px) { .deflist div { grid-template-columns: minmax(0, 1fr); gap: 2px } }
+.dec { display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line) }
+.dec:first-child { border-top: 0; padding-top: 0 }
+.dec code { font-family: var(--mono); font-size: .78rem; color: var(--accent); font-weight: 700; flex: none; padding-top: 2px }
+.steps { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px }
+.chips { display: flex; gap: 6px; flex-wrap: wrap }
+.footer-note { font-size: .8rem; color: var(--muted) }
+
+/* Chat */
+.chat { display: flex; flex-direction: column; gap: 10px }
+.burbuja { max-width: 88%; padding: 10px 14px; border-radius: 14px; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.55 }
+.burbuja.yo { align-self: flex-end; background: var(--accent); color: var(--accent-fg); border-bottom-right-radius: 4px }
+.burbuja.claude { align-self: flex-start; background: var(--surface); border: 1px solid var(--line); border-bottom-left-radius: 4px }
+.burbuja.pensando { color: var(--muted); font-style: italic }
+.burbuja time { display: block; font-size: .68rem; font-weight: 700; opacity: .7; margin-top: 4px; font-style: normal }
+.acciones { align-self: flex-start; display: flex; flex-direction: column; gap: 4px; font-size: .78rem; color: var(--ok); font-weight: 700 }
+.sugeridas { display: flex; gap: 8px; flex-wrap: wrap }
+.sugeridas button { border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 999px; padding: 7px 13px; font-size: .84rem; font-weight: 700 }
+.sugeridas button:hover { border-color: var(--accent); color: var(--accent) }
+.chat-box { position: sticky; bottom: 0; background: var(--bg); padding-top: 6px }
+@media (max-width: 899px) { .chat-box { bottom: calc(76px + env(safe-area-inset-bottom, 0px)) } }
+.chat-box textarea { min-height: 56px }
+
+@media (prefers-reduced-motion: no-preference) { .view { animation: in .18s ease-out } @keyframes in { from { opacity: .4; transform: translateY(4px) } } }
+</style>
+
+<div class="app">
+  <aside class="side" aria-label="Menú">
+    <div class="logo"><span><span class="b">{</span> <span id="logo-nombre">Proyecto</span> <span class="b">}</span></span><small id="logo-sub">Tablero del centro</small></div>
+    <nav id="nav-side"></nav>
+    <p class="sync" id="sync-side"></p>
+  </aside>
+  <main class="main"><div class="view" id="view"></div></main>
+  <nav class="bottom" id="nav-bottom" aria-label="Menú"></nav>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const ICON = {
+    inicio: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+    proyecto: '<path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2.5h8.5A1.5 1.5 0 0 1 21 9v9.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z"/>',
+    tareas: '<path d="m4 12 5 5L20 6"/>',
+    notas: '<path d="M5 4h14a1 1 0 0 1 1 1v10l-5 5H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M15 20v-5h5"/>',
+    chat: '<path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4V6a1 1 0 0 1 1-1z"/>',
+  };
+  const VISTAS = [["inicio", "Inicio"], ["proyecto", "Proyecto"], ["tareas", "Tareas"], ["notas", "Notas"], ["chat", "Chat"]];
+  const state = { info: null, hoy: null, tareas: [], notas: [], chat: [], listo: { info: false, tareas: false, notas: false, chat: false },
+    vista: "inicio", filtroT: "abiertas", filtroN: "todas", sinDb: false, error: "",
+    ia: { disponible: null, herramientas: false, enCurso: false, texto: "", acciones: [], aviso: "" } };
+  let db = null, sample = null, ctl = null;
+  try { const f = localStorage.getItem("tb-filtro"); if (f) state.filtroT = f; } catch (e) {}
+
+  /* utilidades */
+  const h = (tag, props = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(props || {})) {
+      if (v == null || v === false) continue;
+      if (k === "text") n.textContent = v; else if (k === "class") n.className = v; else if (k === "html") n.innerHTML = v;
+      else if (k.startsWith("on")) n.addEventListener(k.slice(2), v); else n.setAttribute(k, v === true ? "" : v);
+    }
+    for (const c of kids.flat()) if (c != null && c !== false) n.append(c);
+    return n;
+  };
+  const svg = (name) => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("fill", "none"); s.setAttribute("stroke", "currentColor");
+    s.setAttribute("stroke-width", "2"); s.setAttribute("stroke-linecap", "round"); s.setAttribute("stroke-linejoin", "round");
+    s.setAttribute("aria-hidden", "true"); s.innerHTML = ICON[name]; return s; };
+  const fecha = (iso, corta) => {
+    if (!iso) return ""; const d = new Date(iso); if (isNaN(d)) return String(iso);
+    const dia = d.toLocaleDateString("es-CO", { day: "numeric", month: "short" });
+    return corta ? dia : dia + ", " + d.toLocaleTimeString("es-CO", { hour: "numeric", minute: "2-digit" });
+  };
+  const saludo = () => { const hr = new Date().getHours(); return hr < 12 ? "Buenos días" : hr < 19 ? "Buenas tardes" : "Buenas noches"; };
+  const abiertas = () => state.tareas.filter((t) => t.estado !== "hecho");
+  const notasPend = () => state.notas.filter((n) => !n.procesada);
+  const ordenar = (a, b) => (b.prioridad ? 1 : 0) - (a.prioridad ? 1 : 0) || (a.orden ?? 99) - (b.orden ?? 99);
+
+  /* navegación */
+  function navBtn(id, label, compact) {
+    const cnt = id === "tareas" ? abiertas().length : id === "notas" ? notasPend().length : 0;
+    return h("button", { type: "button", class: "nav-btn", "aria-current": state.vista === id ? "page" : null,
+      onclick: () => ir(id) }, svg(id), h("span", { text: label }), h("span", { class: "cnt", text: cnt && (id !== "tareas" || !compact) ? String(cnt) : "" }));
+  }
+  function renderNav() {
+    $("nav-side").replaceChildren(...VISTAS.map(([id, l]) => navBtn(id, l, false)));
+    $("nav-bottom").replaceChildren(...VISTAS.map(([id, l]) => navBtn(id, l, true)));
+    const s = state.info && state.info.actualizado ? "Sincronizado con el centro: " + fecha(state.info.actualizado) : "";
+    $("sync-side").textContent = s;
+    if (state.info) { $("logo-nombre").textContent = state.info.nombre || "Proyecto"; $("logo-sub").textContent = state.info.subtitulo || "Tablero del centro"; }
+  }
+  function ir(id) {
+    if (!VISTAS.some(([v]) => v === id)) id = "inicio";
+    state.vista = id;
+    if (location.hash !== "#" + id) { try { history.replaceState(null, "", "#" + id); } catch (e) { location.hash = id; } }
+    render(true);
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", () => { const v = location.hash.slice(1); if (v && v !== state.vista) ir(v); });
+
+  /* repintado: no se pisa lo que se está escribiendo */
+  function escribiendo() { const a = document.activeElement; return a && a.tagName === "TEXTAREA" && a.value.trim() !== ""; }
+  function render(forzar) {
+    renderNav();
+    if (!forzar && escribiendo()) { refrescarListas(); return; }
+    const borrador = (document.querySelector("textarea") || {}).value || "";
+    const v = $("view");
+    v.replaceChildren(...({ inicio: vInicio, proyecto: vProyecto, tareas: vTareas, notas: vNotas, chat: vChat }[state.vista])());
+    const ta = v.querySelector("textarea"); if (ta && borrador) ta.value = borrador;
+    if (state.vista === "chat" && forzar) { const fin = $("chat-fin"); if (fin) fin.scrollIntoView({ block: "end" }); }
+  }
+  function refrescarListas() {
+    const box = $("notas-lista"); if (box) box.replaceChildren(...listaNotas(state.vista === "inicio" ? 3 : 100));
+  }
+
+  /* bloques */
+  function estadoDatos() {
+    if (state.sinDb) return h("div", { class: "empty", text: "Abre este tablero en claude.ai con tu cuenta para ver y editar los datos." });
+    if (state.error) return h("div", { class: "empty", text: state.error });
+    return null;
+  }
+  function tareaRow(t) {
+    const id = "t-" + t.id;
+    const cb = h("input", { type: "checkbox", id, "aria-label": "Marcar como hecha" });
+    cb.checked = t.estado === "hecho";
+    cb.addEventListener("change", () => marcar(t, cb));
+    const pills = [];
+    if (t.prioridad && t.estado !== "hecho") pills.push(h("span", { class: "pill p-prio", text: "Prioridad" }));
+    if (t.estado === "bloqueado") pills.push(h("span", { class: "pill p-bloq", text: "Bloqueado" }));
+    if (t.estado === "en curso") pills.push(h("span", { class: "pill p-curso", text: "En curso" }));
+    if (state.vista === "inicio" && t.grupo) pills.push(h("span", { class: "pill", text: t.grupo }));
+    return h("div", { class: "tarea" + (t.estado === "hecho" ? " hecho" : "") }, cb,
+      h("div", { class: "txt" }, h("label", { for: id, text: t.titulo || "(sin título)" }),
+        t.nota ? h("span", { class: "sub", text: t.nota }) : null,
+        pills.length ? h("div", { class: "pills" }, pills) : null));
+  }
+  function composer(idSufijo) {
+    const ta = h("textarea", { id: "nota-" + idSufijo, placeholder: "Lo que no quieres olvidar: una idea, algo que pidió un cliente, un pendiente…", "aria-label": "Nueva nota" });
+    const hint = h("span", { class: "hint", id: "hint-" + idSufijo, text: "Claude la pasa a la bitácora del centro al sincronizar." });
+    const btn = h("button", { type: "submit", class: "btn primary", text: "Guardar nota", disabled: state.sinDb || null });
+    const form = h("form", { class: "card composer" }, ta, h("div", { class: "row" }, hint, btn));
+    form.addEventListener("submit", (ev) => { ev.preventDefault(); guardarNota(ta, btn, hint); });
+    ta.addEventListener("keydown", (ev) => { if (ev.key === "Enter" && (ev.metaKey || ev.ctrlKey)) { ev.preventDefault(); form.requestSubmit(); } });
+    return form;
+  }
+  function listaNotas(max) {
+    let ns = state.notas;
+    if (state.vista === "notas" && state.filtroN === "pend") ns = ns.filter((n) => !n.procesada);
+    if (!state.listo.notas) return [h("div", { class: "empty", text: "Cargando notas…" })];
+    if (!ns.length) return [h("div", { class: "empty", text: state.notas.length ? "No hay notas sin pasar al centro." : "Todavía no hay notas. Escribe la primera arriba." })];
+    return ns.slice(0, max).map((n) => h("article", { class: "nota" },
+      h("div", { class: "nota-top" },
+        h("div", { class: "pills" }, h("time", { text: fecha(n.creada) }),
+          n.procesada ? h("span", { class: "pill p-ok", text: "En el centro" }) : h("span", { class: "pill p-curso", text: "Por pasar" })),
+        h("button", { type: "button", class: "x", text: "Borrar", "aria-label": "Borrar nota", onclick: () => borrarNota(n.id) })),
+      h("p", { text: n.texto || "" }),
+      n.respuestaClaude ? h("div", { class: "resp" }, h("b", { text: "Claude" }), n.respuestaClaude) : null));
+  }
+
+  /* vistas */
+  function vInicio() {
+    const i = state.info || {};
+    const ab = abiertas();
+    const foco = ab.filter((t) => t.prioridad || t.estado === "en curso" || t.estado === "bloqueado").sort(ordenar).slice(0, 5);
+    const hechas = state.tareas.filter((t) => t.estado === "hecho").length;
+    const stat = (n, l, dest) => h("button", { type: "button", class: "stat", onclick: () => ir(dest) },
+      h("b", { text: state.listo.tareas ? String(n) : "–" }), h("span", { text: l }));
+    return [
+      h("header", { class: "head" },
+        h("span", { class: "eyebrow", text: saludo() + ", Jesús" }),
+        h("h1", { class: "title", text: "Tu día" }),
+        h("div", { class: "meta" }, i.fase ? h("span", { class: "chip acc", text: i.fase }) : null,
+          i.actualizado ? h("span", { text: "Sincronizado " + fecha(i.actualizado) }) : null)),
+      estadoDatos(),
+      state.hoy && state.hoy.mensaje ? h("div", { class: "msg" }, h("span", { class: "who", text: "Claude · " + fecha(state.hoy.actualizado || i.actualizado, true) }), h("p", { text: state.hoy.mensaje })) : null,
+      h("div", { class: "stats" },
+        stat(ab.length, "Tareas abiertas", "tareas"),
+        stat(ab.filter((t) => t.prioridad).length, "Con prioridad", "tareas"),
+        h("button", { type: "button", class: "stat", onclick: () => ir("notas") }, h("b", { text: state.listo.notas ? String(notasPend().length) : "–" }), h("span", { text: "Notas por pasar" })),
+        stat(hechas, "Hechas", "tareas")),
+      h("section", { class: "sec" },
+        h("div", { class: "sec-h" }, h("h2", { text: "Lo más importante" }), h("button", { type: "button", class: "link-btn", text: "Ver todas las tareas", onclick: () => ir("tareas") })),
+        state.listo.tareas
+          ? (foco.length ? h("div", { class: "list" }, foco.map(tareaRow)) : h("div", { class: "empty", text: "Nada urgente. Revisa la lista completa cuando tengas tiempo." }))
+          : h("div", { class: "empty", text: "Cargando tareas…" })),
+      h("section", { class: "sec" },
+        h("div", { class: "sec-h" }, h("h2", { text: "Nota rápida" }), h("button", { type: "button", class: "link-btn", text: "Ver todas las notas", onclick: () => ir("notas") })),
+        composer("inicio"),
+        h("div", { class: "list", id: "notas-lista" }, listaNotas(3))),
+    ];
+  }
+
+  function vProyecto() {
+    const i = state.info;
+    if (!i) return [h("header", { class: "head" }, h("h1", { class: "title", text: "Proyecto" })), estadoDatos() || h("div", { class: "empty", text: "Cargando la ficha del proyecto…" })];
+    const piezaEstado = { listo: ["p-ok", "Listo"], "en-curso": ["p-curso", "En curso"], falta: ["p-prio", "Falta"], pendiente: ["p-prio", "Pendiente"] };
+    return [
+      h("header", { class: "head" },
+        h("span", { class: "eyebrow", text: "El proyecto" }),
+        h("h1", { class: "title", text: i.nombre || "Proyecto" }),
+        h("p", { class: "lead", text: i.queEs || i.resumen || "" }),
+        h("div", { class: "meta" }, i.fase ? h("span", { class: "chip acc", text: i.fase }) : null,
+          (i.enlaces || []).map((l) => h("a", { class: "chip", href: l.url, target: "_blank", rel: "noopener", text: l.label })))),
+      h("section", { class: "card" }, h("dl", { class: "deflist" },
+        [["Para qué sirve", i.paraQue], ["Para quién", i.paraQuien], ["Estado", i.resumen], ["Fuente de verdad", i.fuente]]
+          .filter(([, v]) => v).map(([k, v]) => h("div", {}, h("dt", { text: k }), h("dd", { text: v }))))),
+      (i.piezas || []).length ? h("section", { class: "sec" }, h("div", { class: "sec-h" }, h("h2", { text: "Qué tiene" })),
+        h("div", { class: "grid2" }, i.piezas.map((p) => {
+          const [cls, txt] = piezaEstado[p.estado] || ["", p.estado || ""];
+          return h("article", { class: "pieza" },
+            h("div", { class: "pieza-h" }, h("h3", { text: p.nombre }), txt ? h("span", { class: "pill " + cls, text: txt }) : null),
+            p.que ? h("p", { text: p.que }) : null,
+            p.url ? h("a", { href: p.url, target: "_blank", rel: "noopener", text: p.url.replace(/^https?:\/\//, "") }) : null);
+        }))) : null,
+      (i.proximos || []).length ? h("section", { class: "sec" }, h("div", { class: "sec-h" }, h("h2", { text: "Lo que viene" })),
+        h("div", { class: "card" }, h("ul", { class: "steps" }, i.proximos.map((t) => h("li", { text: t }))))) : null,
+      (i.decisiones || []).length ? h("section", { class: "sec" }, h("div", { class: "sec-h" }, h("h2", { text: "Decisiones clave" })),
+        h("div", { class: "card" }, i.decisiones.map((d) => h("div", { class: "dec" }, h("code", { text: d.id }), h("span", { text: d.texto }))))) : null,
+      (i.stack || []).length ? h("section", { class: "sec" }, h("div", { class: "sec-h" }, h("h2", { text: "Herramientas" })),
+        h("div", { class: "chips" }, i.stack.map((s) => h("span", { class: "chip", text: s })))) : null,
+      i.comoSeTrabaja ? h("section", { class: "sec" }, h("div", { class: "sec-h" }, h("h2", { text: "Cómo se trabaja" })),
+        h("div", { class: "card" }, h("ol", { class: "steps" }, i.comoSeTrabaja.map((s) => h("li", { text: s }))))) : null,
+    ];
+  }
+
+  function vTareas() {
+    const filtros = [["abiertas", "Abiertas"], ["prioridad", "Prioridad"], ["hecho", "Hechas"], ["todas", "Todas"]];
+    const head = [
+      h("header", { class: "head" }, h("span", { class: "eyebrow", text: "Tareas" }),
+        h("h1", { class: "title", text: abiertas().length + " por hacer" }),
+        h("p", { class: "lead", text: "Marca lo que termines. Claude lo pasa a pendientes.md en el centro." })),
+      estadoDatos(),
+      h("div", { class: "filtros", role: "group", "aria-label": "Filtrar tareas" }, filtros.map(([id, l]) =>
+        h("button", { type: "button", "aria-pressed": String(state.filtroT === id), text: l, onclick: () => {
+          state.filtroT = id; try { localStorage.setItem("tb-filtro", id); } catch (e) {} render(true); } }))),
+    ];
+    if (!state.listo.tareas) return [...head, h("div", { class: "empty", text: "Cargando tareas…" })];
+    const f = state.filtroT;
+    const lista = state.tareas.filter((t) => f === "todas" ? true : f === "hecho" ? t.estado === "hecho" :
+      f === "prioridad" ? t.prioridad && t.estado !== "hecho" : t.estado !== "hecho");
+    if (!lista.length) return [...head, h("div", { class: "empty", text: "Nada en este filtro." })];
+    const grupos = new Map();
+    for (const t of lista.sort(ordenar)) { const g = t.grupo || "General"; if (!grupos.has(g)) grupos.set(g, []); grupos.get(g).push(t); }
+    return [...head, ...[...grupos].map(([g, ts]) => {
+      const todas = state.tareas.filter((t) => (t.grupo || "General") === g);
+      const hechas = todas.filter((t) => t.estado === "hecho").length;
+      const pct = todas.length ? Math.round((hechas / todas.length) * 100) : 0;
+      return h("section", { class: "grupo" },
+        h("div", { class: "grupo-h" }, h("h3", { text: g }),
+          h("div", { class: "prog" }, h("span", { text: hechas + " de " + todas.length }), h("div", { class: "bar", role: "img", "aria-label": pct + "% hecho" }, h("i", { style: "width:" + pct + "%" })))),
+        h("div", { class: "list" }, ts.map(tareaRow)));
+    })];
+  }
+
+  function vNotas() {
+    return [
+      h("header", { class: "head" }, h("span", { class: "eyebrow", text: "Notas" }),
+        h("h1", { class: "title", text: "Tus notas" }),
+        h("p", { class: "lead", text: "Lo que anotes aquí llega al centro cuando Claude sincroniza. Si Claude responde algo, aparece debajo de la nota." })),
+      estadoDatos(),
+      composer("notas"),
+      h("div", { class: "filtros", role: "group", "aria-label": "Filtrar notas" }, [["todas", "Todas"], ["pend", "Por pasar"]].map(([id, l]) =>
+        h("button", { type: "button", "aria-pressed": String(state.filtroN === id), text: l, onclick: () => { state.filtroN = id; render(true); } }))),
+      h("div", { class: "list", id: "notas-lista" }, listaNotas(100)),
+    ];
+  }
+
+  /* chat con Claude */
+  const SUGERIDAS_BASE = ["¿Qué hago hoy?", "Resume lo pendiente", "¿Qué está bloqueado y por qué?"];
+  function vChat() {
+    const SUGERIDAS = (state.info && state.info.sugeridas && state.info.sugeridas.length) ? state.info.sugeridas : SUGERIDAS_BASE;
+    const ia = state.ia;
+    const msgs = state.chat.slice(-60);
+    const cuerpo = [];
+    if (!state.listo.chat) cuerpo.push(h("div", { class: "empty", text: "Cargando la conversación…" }));
+    else if (!msgs.length && !ia.enCurso) cuerpo.push(h("div", { class: "empty", text: "Pregúntale algo sobre tu proyecto. Claude ve la ficha, las tareas y las notas, y puede crear o marcar tareas y guardar notas por ti." }),
+      h("div", { class: "sugeridas" }, SUGERIDAS.map((s) => h("button", { type: "button", text: s, disabled: !ia.disponible || null, onclick: () => enviarChat(s) }))));
+    for (const m of msgs) {
+      cuerpo.push(h("div", { class: "burbuja " + (m.de === "claude" ? "claude" : "yo") }, m.texto || "", h("time", { text: fecha(m.en) })));
+      if (m.de === "claude" && (m.acciones || []).length) cuerpo.push(h("div", { class: "acciones" }, m.acciones.map((a) => h("span", { text: "✓ " + a }))));
+    }
+    if (ia.enCurso) {
+      cuerpo.push(h("div", { class: "burbuja claude" + (ia.texto ? "" : " pensando"), id: "chat-vivo", text: ia.texto || "Pensando…" }));
+      if (ia.acciones.length) cuerpo.push(h("div", { class: "acciones", id: "chat-acc" }, ia.acciones.map((a) => h("span", { text: "✓ " + a }))));
+    }
+    cuerpo.push(h("div", { id: "chat-fin" }));
+    const ta = h("textarea", { id: "chat-texto", placeholder: "Escríbele a Claude…", "aria-label": "Mensaje para Claude", disabled: !ia.disponible || null });
+    const enviar = h("button", { type: "submit", class: "btn primary", text: "Enviar", disabled: !ia.disponible || ia.enCurso || null });
+    const parar = ia.enCurso ? h("button", { type: "button", class: "btn", text: "Detener", onclick: () => ctl && ctl.abort() }) : null;
+    const form = h("form", { class: "card composer chat-box" }, ta,
+      h("div", { class: "row" }, h("span", { class: "hint" + (ia.aviso ? " err" : ""), text: ia.aviso || (ia.disponible === false
+        ? "El chat no está disponible en esta vista. Ábrelo en claude.ai con tu cuenta."
+        : "Lo que requiera tocar el repo queda como encargo para la próxima sesión.") }), h("div", { class: "row" }, parar, enviar)));
+    form.addEventListener("submit", (ev) => { ev.preventDefault(); const t = ta.value.trim(); if (t) { ta.value = ""; enviarChat(t); } });
+    ta.addEventListener("keydown", (ev) => { if (ev.key === "Enter" && (ev.metaKey || ev.ctrlKey)) { ev.preventDefault(); form.requestSubmit(); } });
+    return [
+      h("header", { class: "head" }, h("span", { class: "eyebrow", text: "Chat" }), h("h1", { class: "title", text: "Habla con Claude" }),
+        h("p", { class: "lead", text: "Responde al instante con lo que hay en el tablero. La conversación queda guardada y la sesión de Claude Code la lee al sincronizar." })),
+      estadoDatos(),
+      h("div", { class: "chat" }, cuerpo),
+      form,
+    ];
+  }
+  function pintarVivo() {
+    const b = $("chat-vivo");
+    if (!b) { render(); return; }
+    b.textContent = state.ia.texto || "Pensando…";
+    b.classList.toggle("pensando", !state.ia.texto);
+    const acc = $("chat-acc");
+    if (state.ia.acciones.length && !acc) render(); else if (acc) acc.replaceChildren(...state.ia.acciones.map((a) => h("span", { text: "✓ " + a })));
+    const fin = $("chat-fin"); if (fin) fin.scrollIntoView({ block: "end" });
+  }
+  function contexto() {
+    const i = state.info || {};
+    const tareas = state.tareas.map((t) => ({ id: t.id, titulo: t.titulo, grupo: t.grupo, estado: t.estado, prioridad: !!t.prioridad, nota: t.nota || undefined }));
+    const notas = state.notas.slice(0, 15).map((n) => ({ texto: n.texto, creada: n.creada, enElCentro: !!n.procesada, tipo: n.tipo || "nota" }));
+    const ficha = { nombre: i.nombre, queEs: i.queEs, paraQue: i.paraQue, paraQuien: i.paraQuien, estado: i.resumen, piezas: i.piezas, proximos: i.proximos, decisiones: i.decisiones, comoSeTrabaja: i.comoSeTrabaja };
+    const reglasProyecto = (i.reglasChat || []).map((r) => "- " + r + "\n").join("");
+    return "Eres Claude, el asistente de Jesús Cochero dentro del tablero del proyecto «" + (i.nombre || "Proyecto") + "» (una app en claude.ai conectada al centro privado del proyecto).\n\n" +
+      "Reglas:\n- Responde en español de Colombia, de tú, breve y directo. Sin emoji ni signos de exclamación. Texto plano: nada de markdown con asteriscos ni encabezados; si haces una lista usa guiones.\n" +
+      "- Solo sabes lo que está abajo. No inventes datos, cifras ni estados. Si no lo sabes, dilo.\n" +
+      "- No puedes ver ni editar el repositorio. Si te piden algo que exige tocar archivos, la web, la bitácora o hacer commits, guárdalo como encargo con la herramienta guardar_nota (encargo: true) y dile que la próxima sesión de Claude Code lo hará.\n" +
+      "- Usa las herramientas solo cuando Jesús lo pida o cuando sea claramente lo que quiere. Al terminar, di en una frase qué cambiaste.\n" +
+      "- Lo que hay en el tablero es privado de Jesús: no propongas publicarlo ni enviarlo a terceros.\n" + reglasProyecto + "\n" +
+      "Fecha de hoy: " + new Date().toLocaleDateString("es-CO", { weekday: "long", year: "numeric", month: "long", day: "numeric" }) + "\n\n" +
+      "FICHA DEL PROYECTO:\n" + JSON.stringify(ficha) + "\n\nMENSAJE DEL DÍA:\n" + ((state.hoy && state.hoy.mensaje) || "(ninguno)") +
+      "\n\nTAREAS:\n" + JSON.stringify(tareas) + "\n\nNOTAS RECIENTES:\n" + JSON.stringify(notas);
+  }
+  function herramientas() {
+    return [
+      { name: "crear_tarea", description: "Crea una tarea nueva en el tablero. Devuelve el id creado.",
+        inputSchema: { type: "object", properties: { titulo: { type: "string" }, grupo: { type: "string", description: "Uno de los grupos existentes si encaja" }, prioridad: { type: "boolean" }, nota: { type: "string" } }, required: ["titulo"] },
+        async execute(inp) {
+          const titulo = String(inp.titulo || "").trim().slice(0, 200); if (!titulo) throw new Error("Falta el título");
+          const id = "chat-" + Date.now().toString(36);
+          const data = { titulo, grupo: String(inp.grupo || "General").slice(0, 60), estado: "pendiente", prioridad: !!inp.prioridad, orden: 50, origen: "chat", cambioTablero: new Date().toISOString() };
+          if (inp.nota) data.nota = String(inp.nota).slice(0, 300);
+          await db.doc("tareas/" + id).set(data);
+          state.ia.acciones.push("Tarea creada: " + titulo); pintarVivo();
+          return { id };
+        } },
+      { name: "cambiar_estado_tarea", description: "Cambia el estado de una tarea existente por su id (pendiente, en curso, bloqueado o hecho). Devuelve ok.",
+        inputSchema: { type: "object", properties: { id: { type: "string" }, estado: { type: "string", enum: ["pendiente", "en curso", "bloqueado", "hecho"] } }, required: ["id", "estado"] },
+        async execute(inp) {
+          const id = String(inp.id || ""); const t = state.tareas.find((x) => x.id === id); if (!t) throw new Error("No existe una tarea con ese id");
+          const estado = ["pendiente", "en curso", "bloqueado", "hecho"].includes(inp.estado) ? inp.estado : null; if (!estado) throw new Error("Estado no válido");
+          await db.doc("tareas/" + id).update({ estado, cambioTablero: new Date().toISOString() });
+          state.ia.acciones.push("«" + t.titulo + "» → " + estado); pintarVivo();
+          return "ok";
+        } },
+      { name: "guardar_nota", description: "Guarda una nota en el tablero para que la próxima sesión de Claude Code la pase al centro. Con encargo: true queda marcada como trabajo que esa sesión debe hacer en el repo. Devuelve ok.",
+        inputSchema: { type: "object", properties: { texto: { type: "string" }, encargo: { type: "boolean" } }, required: ["texto"] },
+        async execute(inp) {
+          const texto = String(inp.texto || "").trim().slice(0, 2000); if (!texto) throw new Error("Falta el texto");
+          await db.collection("notas").add({ texto, creada: new Date().toISOString(), procesada: false, origen: "chat", tipo: inp.encargo ? "encargo" : "nota" });
+          state.ia.acciones.push(inp.encargo ? "Encargo para la sesión guardado" : "Nota guardada"); pintarVivo();
+          return "ok";
+        } },
+    ];
+  }
+  async function enviarChat(texto) {
+    const ia = state.ia;
+    if (!db || !sample || ia.enCurso) return;
+    ia.aviso = ""; ia.enCurso = true; ia.texto = ""; ia.acciones = [];
+    const ahora = new Date().toISOString();
+    try { await db.collection("chat").add({ de: "jesus", texto, en: ahora, leidoPorSesion: false }); }
+    catch (e) { ia.enCurso = false; ia.aviso = "No se pudo guardar tu mensaje. Revisa tu conexión."; render(true); return; }
+    render(true);
+    const historial = state.chat.slice(-12).map((m) => ({ role: m.de === "claude" ? "assistant" : "user", content: m.texto || "…" }));
+    if (!historial.length || historial[historial.length - 1].content !== texto) historial.push({ role: "user", content: texto });
+    const turnos = [{ role: "user", content: contexto() }, ...historial];
+    ctl = new AbortController();
+    const opts = { signal: ctl.signal, onText: ({ text }) => { ia.texto = text; pintarVivo(); } };
+    if (ia.herramientas) opts.tools = herramientas(); else opts.cache = false;
+    let respuesta = "";
+    try { respuesta = (await sample(turnos, opts)).text; }
+    catch (e) {
+      respuesta = e && e.text ? e.text : "";
+      const c = e && e.code;
+      if (c === "not_granted" || c === "sampling_disabled" || c === "not_declared" || c === "capability_disabled" || c === "capability_removed") { ia.disponible = false; ia.aviso = "No diste permiso para usar Claude aquí. Puedes activarlo en los permisos del artefacto."; }
+      else if (c === "rate_limited") ia.aviso = "Llegaste al límite por ahora. Intenta más tarde.";
+      else if (c === "session_expired") ia.aviso = "Tu sesión expiró. Vuelve a iniciar sesión en claude.ai.";
+      else if (c === "refused") { respuesta = ""; ia.aviso = "Claude no pudo responder eso. Prueba a decirlo de otra forma."; }
+      else if (c !== "cancelled") ia.aviso = "Se cortó la respuesta. Inténtalo de nuevo.";
+      if (respuesta && c !== "cancelled") respuesta += "\n\n(respuesta interrumpida)";
+    }
+    const acciones = ia.acciones.slice();
+    if (respuesta || acciones.length) {
+      try { await db.collection("chat").add({ de: "claude", texto: respuesta || "Listo.", en: new Date().toISOString(), acciones, leidoPorSesion: false }); }
+      catch (e) { ia.aviso = "La respuesta no se pudo guardar."; }
+    }
+    ia.enCurso = false; ia.texto = ""; ia.acciones = []; ctl = null;
+    render(true);
+  }
+
+  /* escrituras */
+  function aviso(hint, msg) {
+    if (!hint) return; const base = "Claude la pasa a la bitácora del centro al sincronizar.";
+    hint.textContent = msg; hint.classList.add("err");
+    setTimeout(() => { hint.textContent = base; hint.classList.remove("err"); }, 5000);
+  }
+  async function guardarNota(ta, btn, hint) {
+    const texto = ta.value.trim(); if (!texto || !db) return;
+    btn.disabled = true;
+    try {
+      await db.collection("notas").add({ texto, creada: new Date().toISOString(), procesada: false, origen: "tablero" });
+      ta.value = ""; ta.blur(); btn.textContent = "Guardada";
+      setTimeout(() => { btn.textContent = "Guardar nota"; }, 1500);
+      render(true);
+    } catch (e) {
+      aviso(hint, e && e.code === "quota_exceeded" ? "El tablero está lleno: borra notas viejas." : "No se pudo guardar. Revisa tu conexión; el texto sigue ahí.");
+    } finally { btn.disabled = false; }
+  }
+  async function marcar(t, cb) {
+    if (!db) { cb.checked = !cb.checked; return; }
+    cb.disabled = true;
+    try { await db.doc("tareas/" + t.id).update({ estado: cb.checked ? "hecho" : "pendiente", cambioTablero: new Date().toISOString() }); }
+    catch (e) { cb.checked = !cb.checked; state.error = "No se pudo guardar el cambio. Revisa tu conexión."; render(true); setTimeout(() => { state.error = ""; render(); }, 5000); }
+    finally { cb.disabled = false; }
+  }
+  async function borrarNota(id) {
+    if (!db) return;
+    try { await db.doc("notas/" + id).delete(); }
+    catch (e) { state.error = "No se pudo borrar la nota."; render(true); setTimeout(() => { state.error = ""; render(); }, 5000); }
+  }
+
+  /* arranque */
+  state.vista = VISTAS.some(([v]) => v === location.hash.slice(1)) ? location.hash.slice(1) : "inicio";
+  render(true);
+  (async () => {
+    db = window.claude && window.claude.use ? await window.claude.use("db") : null;
+    if (!db) { state.sinDb = true; state.ia.disponible = false; state.listo = { info: true, tareas: true, notas: true, chat: true }; render(true); return; }
+    (async () => {
+      try { sample = window.claude && window.claude.use ? await window.claude.use("sample") : null; } catch (e) { sample = null; }
+      state.ia.disponible = !!sample;
+      if (sample) { try { const l = await sample.limits(); state.ia.herramientas = !!(l && l.tools); } catch (e) { state.ia.herramientas = false; } }
+      render();
+    })();
+    db.collection("chat").orderBy("en", "asc").onSnapshot((s) => { state.chat = s.docs.map((d) => ({ id: d.id, ...d.data() })); state.listo.chat = true; if (!state.ia.enCurso) render(); }, () => { state.listo.chat = true; });
+    let faltan = 4;
+    const timer = setTimeout(() => { if (faltan > 0) { state.error = "Los datos tardan en llegar. Revisa tu conexión."; render(); } }, 10000);
+    const ok = (snap) => { if (snap.metadata && !snap.metadata.fromCache) { faltan--; if (faltan <= 0) { clearTimeout(timer); if (state.error) { state.error = ""; } } } };
+    const fallo = () => { clearTimeout(timer); state.error = "Los datos del tablero no están disponibles en esta vista."; render(); };
+    db.doc("proyecto/info").onSnapshot((s) => { state.info = s.exists ? s.data() : null; state.listo.info = true; ok(s); render(); }, fallo);
+    db.doc("proyecto/hoy").onSnapshot((s) => { state.hoy = s.exists ? s.data() : null; ok(s); render(); }, fallo);
+    db.collection("tareas").onSnapshot((s) => { state.tareas = s.docs.map((d) => ({ id: d.id, ...d.data() })); state.listo.tareas = true; ok(s); render(); }, fallo);
+    db.collection("notas").orderBy("creada", "desc").onSnapshot((s) => { state.notas = s.docs.map((d) => ({ id: d.id, ...d.data() })); state.listo.notas = true; ok(s); render(); }, fallo);
+  })();
+})();
+</script>
