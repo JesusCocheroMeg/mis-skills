@@ -143,6 +143,32 @@ textarea { width: 100%; min-height: 84px; resize: vertical; font: inherit; color
 .pieza h3 { font-size: .95rem; font-weight: 800; overflow-wrap: anywhere }
 .pieza p { font-size: .86rem; color: var(--muted) }
 .pieza a { font-size: .82rem; font-weight: 700; text-decoration: none; overflow-wrap: anywhere }
+.galeria { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 12px }
+.gal { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; min-width: 0 }
+.gal-imgs { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr }
+.gal-imgs a { display: grid; place-items: center; padding: 14px; min-height: 90px; background: var(--surface-2) }
+.gal-imgs a.oscuro { background: #0a0f1c }
+.gal-imgs a.claro { background: #ffffff }
+.gal-imgs img { max-width: 100%; max-height: 360px; height: auto; display: block }
+.gal-imgs.es-logo img { max-height: 40px }
+.gal-b { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-top: 1px solid var(--line) }
+.gal-b h3 { font-size: .92rem; font-weight: 800; overflow-wrap: anywhere }
+.gal-b p { font-size: .84rem; color: var(--muted) }
+.accesos { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr)); gap: 10px }
+.acceso { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; padding: 14px; min-height: 92px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; color: var(--fg) }
+.acceso:hover { border-color: var(--accent) }
+.acceso-img { align-self: stretch; display: grid; place-items: center; height: 64px; border-radius: 8px; background: var(--surface-2); overflow: hidden; margin-bottom: 6px }
+.acceso-img.oscuro { background: #0a0f1c }
+.acceso-img.claro { background: #ffffff }
+.acceso-img img { max-height: 100%; width: auto; object-fit: cover; object-position: top }
+.acceso-img.es-logo img { max-height: 26px }
+.acceso-t { font-weight: 800; font-size: .95rem }
+.acceso-r { font-size: .8rem; color: var(--muted); font-weight: 600 }
+.volver { align-self: flex-start }
+.accesos-mini { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px }
+.accesos-mini button { flex: none; padding: 6px 13px; border-radius: 999px; font-size: .82rem; font-weight: 700; border: 1px solid var(--line); background: var(--surface); color: var(--fg) }
+.accesos-mini button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-fg) }
 .deflist { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 }
 .deflist div { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-top: 1px solid var(--line) }
 .deflist div:first-child { border-top: 0; padding-top: 0 }
@@ -195,7 +221,7 @@ textarea { width: 100%; min-height: 84px; resize: vertical; font: inherit; color
     chat: '<path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4V6a1 1 0 0 1 1-1z"/>',
   };
   const VISTAS = [["inicio", "Inicio"], ["proyecto", "Proyecto"], ["tareas", "Tareas"], ["notas", "Notas"], ["chat", "Chat"]];
-  const state = { info: null, hoy: null, tareas: [], notas: [], chat: [], listo: { info: false, tareas: false, notas: false, chat: false },
+  const state = { info: null, hoy: null, tareas: [], notas: [], chat: [], galeria: [], subP: null, listo: { info: false, tareas: false, notas: false, chat: false },
     vista: "inicio", filtroT: "abiertas", filtroN: "todas", sinDb: false, error: "",
     ia: { disponible: null, herramientas: false, enCurso: false, texto: "", acciones: [], aviso: "" } };
   let db = null, sample = null, ctl = null;
@@ -241,6 +267,7 @@ textarea { width: 100%; min-height: 84px; resize: vertical; font: inherit; color
   }
   function ir(id) {
     if (!VISTAS.some(([v]) => v === id)) id = "inicio";
+    if (id !== state.vista || id === "proyecto") state.subP = null;
     state.vista = id;
     if (location.hash !== "#" + id) { try { history.replaceState(null, "", "#" + id); } catch (e) { location.hash = id; } }
     render(true);
@@ -340,10 +367,64 @@ textarea { width: 100%; min-height: 84px; resize: vertical; font: inherit; color
     ];
   }
 
+  /* Proyecto: resumen arriba y accesos rápidos a cada sección; cada acceso abre su sección sola. */
+  const PIEZA_ESTADO = { listo: ["p-ok", "Listo"], "en-curso": ["p-curso", "En curso"], "en-revision": ["p-curso", "En revisión"], falta: ["p-prio", "Falta"], pendiente: ["p-prio", "Pendiente"] };
+  function seccionesProyecto(i) {
+    const out = [];
+    const piezas = i.piezas || [];
+    if (piezas.length) out.push({ id: "piezas", titulo: "Qué tiene", resumen: piezas.filter((p) => p.estado === "listo").length + " de " + piezas.length + " listas",
+      cuerpo: () => h("div", { class: "grid2" }, piezas.map((p) => {
+        const [cls, txt] = PIEZA_ESTADO[p.estado] || ["", p.estado || ""];
+        return h("article", { class: "pieza" },
+          h("div", { class: "pieza-h" }, h("h3", { text: p.nombre }), txt ? h("span", { class: "pill " + cls, text: txt }) : null),
+          p.que ? h("p", { text: p.que }) : null,
+          p.url ? h("a", { href: p.url, target: "_blank", rel: "noopener", text: p.url.replace(/^https?:\/\//, "") }) : null);
+      })) });
+    const gal = state.galeria.filter((g) => (g.imagenes || []).some((im) => im && im.src)).sort((a, b) => (a.orden ?? 99) - (b.orden ?? 99));
+    const grupos = new Map();
+    for (const g of gal) { const s = g.seccion || "Galería"; if (!grupos.has(s)) grupos.set(s, []); grupos.get(s).push(g); }
+    for (const [titulo, lista] of grupos) {
+      const rev = lista.filter((g) => g.estado === "en-revision").length;
+      const primera = lista[0].imagenes.find((im) => im && im.src);
+      out.push({ id: "gal-" + titulo, titulo, resumen: lista.length + (lista.length === 1 ? " elemento" : " elementos") + (rev ? " · " + rev + " en revisión" : ""),
+        mini: primera, logo: lista[0].tipo === "logo", cuerpo: () => galeriaGrid(lista) });
+    }
+    if ((i.proximos || []).length) out.push({ id: "proximos", titulo: "Lo que viene", resumen: i.proximos.length + " pasos",
+      cuerpo: () => h("div", { class: "card" }, h("ul", { class: "steps" }, i.proximos.map((t) => h("li", { text: t })))) });
+    if ((i.decisiones || []).length) out.push({ id: "decisiones", titulo: "Decisiones clave", resumen: i.decisiones.length + " anotadas",
+      cuerpo: () => h("div", { class: "card" }, i.decisiones.map((d) => h("div", { class: "dec" }, h("code", { text: d.id }), h("span", { text: d.texto })))) });
+    if ((i.stack || []).length || (i.comoSeTrabaja || []).length) out.push({ id: "trabajo", titulo: "Cómo se trabaja", resumen: (i.stack || []).length + " herramientas",
+      cuerpo: () => h("div", { class: "sec" },
+        (i.comoSeTrabaja || []).length ? h("div", { class: "card" }, h("ol", { class: "steps" }, i.comoSeTrabaja.map((s) => h("li", { text: s })))) : null,
+        (i.stack || []).length ? h("div", { class: "chips" }, i.stack.map((s) => h("span", { class: "chip", text: s }))) : null) });
+    return out;
+  }
+  function galeriaGrid(lista) {
+    return h("div", { class: "galeria" }, lista.map((g) => {
+      const [cls, txt] = PIEZA_ESTADO[g.estado] || ["", ""];
+      return h("article", { class: "gal" },
+        h("div", { class: "gal-imgs" + (g.tipo === "logo" ? " es-logo" : "") }, g.imagenes.filter((im) => im && im.src).map((im) =>
+          h("a", { class: im.fondo || "", href: im.src, target: "_blank", rel: "noopener" }, h("img", { src: im.src, alt: im.alt || g.titulo || "", loading: "lazy" })))),
+        h("div", { class: "gal-b" },
+          h("div", { class: "pieza-h" }, h("h3", { text: g.titulo || "" }), txt ? h("span", { class: "pill " + cls, text: txt }) : null),
+          g.nota ? h("p", { text: g.nota }) : null));
+    }));
+  }
+  function abrirSeccion(id) { state.subP = id; render(true); window.scrollTo(0, 0); }
   function vProyecto() {
     const i = state.info;
     if (!i) return [h("header", { class: "head" }, h("h1", { class: "title", text: "Proyecto" })), estadoDatos() || h("div", { class: "empty", text: "Cargando la ficha del proyecto…" })];
-    const piezaEstado = { listo: ["p-ok", "Listo"], "en-curso": ["p-curso", "En curso"], falta: ["p-prio", "Falta"], pendiente: ["p-prio", "Pendiente"] };
+    const secs = seccionesProyecto(i);
+    const abierta = secs.find((s) => s.id === state.subP);
+    if (abierta) return [
+      h("header", { class: "head" },
+        h("button", { type: "button", class: "link-btn volver", text: "← " + (i.nombre || "Proyecto"), onclick: () => abrirSeccion(null) }),
+        h("h1", { class: "title", text: abierta.titulo }),
+        h("p", { class: "lead", text: abierta.resumen })),
+      h("div", { class: "accesos-mini", role: "group", "aria-label": "Otras secciones" }, secs.map((s) =>
+        h("button", { type: "button", "aria-pressed": String(s.id === abierta.id), text: s.titulo, onclick: () => abrirSeccion(s.id) }))),
+      abierta.cuerpo(),
+    ];
     return [
       h("header", { class: "head" },
         h("span", { class: "eyebrow", text: "El proyecto" }),
@@ -351,25 +432,14 @@ textarea { width: 100%; min-height: 84px; resize: vertical; font: inherit; color
         h("p", { class: "lead", text: i.queEs || i.resumen || "" }),
         h("div", { class: "meta" }, i.fase ? h("span", { class: "chip acc", text: i.fase }) : null,
           (i.enlaces || []).map((l) => h("a", { class: "chip", href: l.url, target: "_blank", rel: "noopener", text: l.label })))),
+      secs.length ? h("section", { class: "sec" }, h("div", { class: "sec-h" }, h("h2", { text: "Accesos rápidos" })),
+        h("div", { class: "accesos" }, secs.map((s) => h("button", { type: "button", class: "acceso", onclick: () => abrirSeccion(s.id) },
+          s.mini ? h("span", { class: "acceso-img" + (s.mini.fondo ? " " + s.mini.fondo : "") + (s.logo ? " es-logo" : "") }, h("img", { src: s.mini.src, alt: "" })) : null,
+          h("span", { class: "acceso-t", text: s.titulo }),
+          h("span", { class: "acceso-r", text: s.resumen }))))) : null,
       h("section", { class: "card" }, h("dl", { class: "deflist" },
         [["Para qué sirve", i.paraQue], ["Para quién", i.paraQuien], ["Estado", i.resumen], ["Fuente de verdad", i.fuente]]
           .filter(([, v]) => v).map(([k, v]) => h("div", {}, h("dt", { text: k }), h("dd", { text: v }))))),
-      (i.piezas || []).length ? h("section", { class: "sec" }, h("div", { class: "sec-h" }, h("h2", { text: "Qué tiene" })),
-        h("div", { class: "grid2" }, i.piezas.map((p) => {
-          const [cls, txt] = piezaEstado[p.estado] || ["", p.estado || ""];
-          return h("article", { class: "pieza" },
-            h("div", { class: "pieza-h" }, h("h3", { text: p.nombre }), txt ? h("span", { class: "pill " + cls, text: txt }) : null),
-            p.que ? h("p", { text: p.que }) : null,
-            p.url ? h("a", { href: p.url, target: "_blank", rel: "noopener", text: p.url.replace(/^https?:\/\//, "") }) : null);
-        }))) : null,
-      (i.proximos || []).length ? h("section", { class: "sec" }, h("div", { class: "sec-h" }, h("h2", { text: "Lo que viene" })),
-        h("div", { class: "card" }, h("ul", { class: "steps" }, i.proximos.map((t) => h("li", { text: t }))))) : null,
-      (i.decisiones || []).length ? h("section", { class: "sec" }, h("div", { class: "sec-h" }, h("h2", { text: "Decisiones clave" })),
-        h("div", { class: "card" }, i.decisiones.map((d) => h("div", { class: "dec" }, h("code", { text: d.id }), h("span", { text: d.texto }))))) : null,
-      (i.stack || []).length ? h("section", { class: "sec" }, h("div", { class: "sec-h" }, h("h2", { text: "Herramientas" })),
-        h("div", { class: "chips" }, i.stack.map((s) => h("span", { class: "chip", text: s })))) : null,
-      i.comoSeTrabaja ? h("section", { class: "sec" }, h("div", { class: "sec-h" }, h("h2", { text: "Cómo se trabaja" })),
-        h("div", { class: "card" }, h("ol", { class: "steps" }, i.comoSeTrabaja.map((s) => h("li", { text: s }))))) : null,
     ];
   }
 
@@ -591,6 +661,7 @@ textarea { width: 100%; min-height: 84px; resize: vertical; font: inherit; color
     const timer = setTimeout(() => { if (faltan > 0) { state.error = "Los datos tardan en llegar. Revisa tu conexión."; render(); } }, 10000);
     const ok = (snap) => { if (snap.metadata && !snap.metadata.fromCache) { faltan--; if (faltan <= 0) { clearTimeout(timer); if (state.error) { state.error = ""; } } } };
     const fallo = () => { clearTimeout(timer); state.error = "Los datos del tablero no están disponibles en esta vista."; render(); };
+    db.collection("galeria").onSnapshot((s) => { state.galeria = s.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
     db.doc("proyecto/info").onSnapshot((s) => { state.info = s.exists ? s.data() : null; state.listo.info = true; ok(s); render(); }, fallo);
     db.doc("proyecto/hoy").onSnapshot((s) => { state.hoy = s.exists ? s.data() : null; ok(s); render(); }, fallo);
     db.collection("tareas").onSnapshot((s) => { state.tareas = s.docs.map((d) => ({ id: d.id, ...d.data() })); state.listo.tareas = true; ok(s); render(); }, fallo);

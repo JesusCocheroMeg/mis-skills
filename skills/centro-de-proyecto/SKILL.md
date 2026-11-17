@@ -153,6 +153,12 @@ con el enlace; si no la tiene, nada de esto aplica.
 Para crear, sincronizar o cambiar un tablero, leé `references/tablero.md`. La plantilla es
 `assets/tablero.html`. Se crea solo si el usuario lo pide.
 
+Reglas del tablero, al crearlo y en cada sincronización: **un solo artefacto por centro** (nunca
+páginas aparte: lo visual va en su `galeria`); **todo lo relevante con detalle**, incluido lo que
+solo se dijo en el chat; **lo visual como imágenes** (logos, plantillas, capturas); **nada
+sensible** (cédula, cuentas, credenciales), tampoco en imágenes. El checklist de contenido está en
+`references/tablero.md`.
+
 ## Fuentes
 
 - `fuentes/` guarda tal cual lo que entregó el cliente o el equipo.
