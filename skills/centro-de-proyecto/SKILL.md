@@ -1,6 +1,6 @@
 ---
 name: centro-de-proyecto
-description: Úsala cuando el usuario quiera crear, adoptar o abrir el repo centro de un proyecto (su espacio privado junto a los repos de código, o una carpeta dentro del mismo repo), arrancar el día o pedir el estado de un proyecto con varios repos, guardar fuentes que entregó un cliente o equipo, delegar trabajo a agentes en otros repos del proyecto, o hacer commit o PR en un repo que es del cliente o del equipo. También cuando el usuario cuenta lo que pasó en un proyecto (una reunión, un mensaje del cliente, un cambio, un problema), pregunta qué sigue, quiere preparar o cerrar una reunión, necesita que le expliquen algo para avanzar o busca herramientas para el proyecto. También ante menciones de centro, manifiesto, fuentes, bitácora o documentación general.
+description: Úsala cuando el usuario quiera crear, adoptar o abrir el repo centro de un proyecto (su espacio privado junto a los repos de código, o una carpeta dentro del mismo repo), arrancar el día o pedir el estado de un proyecto con varios repos, guardar fuentes que entregó un cliente o equipo, delegar trabajo a agentes en otros repos del proyecto, o hacer commit o PR en un repo que es del cliente o del equipo. También cuando el usuario cuenta lo que pasó en un proyecto (una reunión, un mensaje del cliente, un cambio, un problema), pregunta qué sigue, quiere preparar o cerrar una reunión, necesita que le expliquen algo para avanzar o busca herramientas para el proyecto. También cuando quiere crear, sincronizar o cambiar el tablero del proyecto (la app en claude.ai para verlo desde el celular). También ante menciones de centro, manifiesto, fuentes, bitácora, documentación general o tablero.
 argument-hint: "[crear | adoptar | abrir sesión | contar | reunión | explicar | delegar | fuentes]"
 ---
 
@@ -9,6 +9,11 @@ argument-hint: "[crear | adoptar | abrir sesión | contar | reunión | explicar 
 Un **centro** es un repo git privado de Jesús que vive en la carpeta del proyecto, al lado de los
 repos de código. Ahí se piensa, se decide, se planea y se dirige; el código se toca en los repos
 que el manifiesto declara. Lo que hay en el centro **nunca** termina en un repo ajeno.
+
+**El centro es siempre privado de Jesús**, sin importar el dueño del repo de código. Su planeación
+como líder, la bitácora, los pendientes, las reuniones, lo de negocio (dinero, acuerdos, comisiones,
+propuestas) y los planes y prompts de IA (`docs/superpowers/`) no salen del centro a ningún repo,
+tampoco a uno `empresa`.
 
 ```
 <proyecto>/
@@ -125,6 +130,35 @@ Encima de la tabla, la línea `Modo: separado` o
 Debajo van `## Documentación general` (dónde vive, quién la mantiene, cómo se actualiza) y
 `## Gestor de tareas` (Plane, Jira…; solo anotado, la skill no lo consulta).
 
+## Documentación del producto en el repo del equipo
+
+Si el manifiesto declara `Documentación del producto: <repo>/docs/` (línea debajo de la tabla), la
+documentación técnica (`docs/modules/`, arquitectura, decisiones técnicas, guías técnicas) vive en
+ese repo y no en el centro. Así la ve el equipo y la puede leer la IA de documentación.
+
+- Cada documento vive en un solo lugar: lo que se mueve se borra del centro y el centro lo enlaza.
+- Antes de mover un archivo, se revisa: se quitan las menciones a acuerdos, montos y enlaces a
+  material de negocio, y se le muestra a Jesús qué se limpió.
+- Las decisiones se separan: las de negocio se quedan en el centro y las técnicas van al repo.
+- Solo aplica a repos con dueño `propio` o `empresa`. En `cliente` o `equipo`, la ruta `docs/` además
+  tiene que estar declarada como excepción del flujo 5.
+
+## Tablero (opcional)
+
+Algunos centros tienen un **tablero**: una app privada en claude.ai para ver y mover el proyecto
+desde el celular (inicio, ficha del proyecto, tareas, notas y chat con Claude). El centro sigue
+siendo la fuente de verdad. Un centro tiene tablero si su `README.md` tiene la sección `## Tablero`
+con el enlace; si no la tiene, nada de esto aplica.
+
+Para crear, sincronizar o cambiar un tablero, leé `references/tablero.md`. La plantilla es
+`assets/tablero.html`. Se crea solo si el usuario lo pide.
+
+Reglas del tablero, al crearlo y en cada sincronización: **un solo artefacto por centro** (nunca
+páginas aparte: lo visual va en su `galeria`); **todo lo relevante con detalle**, incluido lo que
+solo se dijo en el chat; **lo visual como imágenes** (logos, plantillas, capturas); **nada
+sensible** (cédula, cuentas, credenciales), tampoco en imágenes. El checklist de contenido está en
+`references/tablero.md`.
+
 ## Fuentes
 
 - `fuentes/` guarda tal cual lo que entregó el cliente o el equipo.
@@ -149,6 +183,7 @@ Debajo van `## Documentación general` (dónde vive, quién la mantiene, cómo s
 6. **Separado:** primer commit; el remoto debe ser privado del usuario: preguntá, no lo crees
    por tu cuenta. **Integrado:** commit en el repo con prefijo `docs(centro):`, siguiendo las
    reglas de ramas del manifiesto para ese repo, tras el chequeo de `privado/`.
+7. Ofrecé el tablero en una línea. Si dice que no, no lo vuelvas a ofrecer.
 
 ### 2. Adoptar centro existente
 No reestructures. Revisá qué falta del mínimo (normalmente el manifiesto y, si hay documentación
@@ -167,6 +202,9 @@ pasalas al manifiesto y dejá un enlace.
 3. Leé `pendientes.md`, las últimas entradas de `bitacora.md` (en integrado, también
    `privado/bitacora.md`) y, si existen, `preguntas.md`,
    la reunión más próxima en `reuniones/` y `docs/modules/ESTADO.md`.
+   Si el README tiene `## Tablero`, sincronizalo antes del diagnóstico (`references/tablero.md`,
+   «Sincronizar») y sumá al diagnóstico la fila **Tablero**: notas, encargos, tareas y mensajes
+   del chat que entraron.
 4. Entregá el diagnóstico:
 
    | Campo | Contenido |
@@ -185,7 +223,7 @@ Solo sobre piezas `local` cuya ruta existe. Si la pieza es `sin acceso`, `solo d
 su ruta no existe, decilo y no delegues. El encargo al agente incluye:
 - ruta absoluta y rama;
 - las reglas del manifiesto para ese repo;
-- «**No escribas documentación ni planes en este repo. Entregá qué cambiaste, los commits y las
+- «**No escribas planes en este repo, ni documentación salvo en `<repo>/docs/` si el manifiesto la declara ahí. Entregá qué cambiaste, los commits y las
   pruebas.**» La documentación la escribe solo la sesión del centro. En integrado:
   «**Trabajá solo en `<carpeta de la pieza>/`. No toques `<carpeta del centro>/`.**»;
 - si el dueño es `cliente` o `equipo`, el bloque de **revisión antes de commit** (flujo 5, pasos
