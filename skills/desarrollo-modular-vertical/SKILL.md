@@ -1,6 +1,6 @@
 ---
 name: desarrollo-modular-vertical
-description: Úsala cuando el usuario quiera arrancar un proyecto o un módulo, recuperar uno ya comenzado, auditar un prototipo, planificar una versión, diseñar o continuar una vertical, introducir un ajuste, revisar el avance, revisar un PR o cerrar una vertical o versión. También ante menciones de módulos, verticales, versiones, decisiones, roadmap, alcance, alcance global o final, capacidades futuras, Definition of Done, criterios de revisión, revisar o aprobar un pull request, documentación desactualizada o implementación progresiva.
+description: Úsala cuando el usuario quiera arrancar un proyecto o un módulo, recuperar uno ya comenzado, auditar un prototipo, planificar una versión, diseñar o continuar una vertical, introducir un ajuste, revisar el avance, revisar un PR o cerrar una vertical o versión. También ante menciones de módulos, verticales, versiones, decisiones, roadmap, alcance, alcance global o final, capacidades futuras, MVP, definir el stack, pruebas desde el día 1, CI/CD o despliegue, métricas de uso o analítica, Definition of Done, criterios de revisión, revisar o aprobar un pull request, documentación desactualizada o implementación progresiva.
 argument-hint: "[módulo, escenario o acción]"
 ---
 
@@ -29,6 +29,24 @@ Global (una vez por proyecto, junto a `docs/modules/`):
 | `docs/modules/ESTADO.md` | panel de módulos y dependencias |
 | `docs/definition-of-done.md` | qué se le exige a cada tipo de cambio para aprobar su PR (la acuerda el usuario al arrancar, Escenario K) |
 | `docs/alcance-global.md` | el alcance final del proyecto: capacidades futuras y los **cuidados baratos** que todo cambio respeta desde hoy |
+| `docs/plataforma.md` | el **stack** elegido y su porqué, cómo se prueba y se despliega (**CI/CD**) y qué **métricas de uso** se miden |
+
+## Principios de entrega
+
+- **MVP que escala.** La primera versión es lo más pequeño que ya le sirve a alguien y se puede
+  entregar pronto; se diseña para el alcance completo de `alcance-global.md`. Se recorta
+  funcionalidad, nunca los cuidados: lo entregado crece hacia el alcance final sin reescribirse.
+- **Pruebas desde el día 1.** La primera vertical del proyecto deja el framework de pruebas
+  instalado y el CI ejecutándolas. Desde ahí toda función nace con su prueba (TDD en F). «Las
+  pruebas las agregamos después» no existe.
+- **Stack definido antes del primer módulo**, en `plataforma.md`, con el porqué de cada pieza.
+  Cambiar una pieza es una decisión del usuario, no algo que se cuela en una vertical.
+- **Despliegue solo por CI/CD.** Nada llega a un ambiente con un deploy a mano. Si todavía no hay
+  pipeline, crearlo es una tarea antes de la primera entrega a usuarios; mientras tanto, el
+  paso manual queda como deuda en `roadmap.md`, nunca como costumbre.
+- **Métricas de uso desde la primera entrega.** Se mide cuántos usuarios entran y qué funciones
+  usan. Cada vertical que agrega una función declara qué evento emite, con los nombres de
+  `plataforma.md` y sin datos personales en el evento.
 
 **La documentación vive en el repo** y es parte del cambio: lo que cambia comportamiento, datos,
 permisos o decisiones actualiza su documento **en el mismo PR**. Una documentación que contradice
@@ -60,7 +78,7 @@ silencio: informala en el diagnóstico.
 
 ## Lectura mínima para reconstruir el estado
 
-0. Que existan `docs/definition-of-done.md` y `docs/alcance-global.md`. Si falta alguno, el
+0. Que existan `docs/definition-of-done.md`, `docs/alcance-global.md` y `docs/plataforma.md`. Si falta alguno, el
    escenario es **K** antes que cualquier otro (salvo **L**, que avisa y usa la DoD base).
 1. `docs/modules/ESTADO.md`
 2. `docs/modules/<module>/README.md` — reglas, tabla de verticales y siguiente paso
@@ -92,13 +110,13 @@ directamente relacionado con la solicitud.
 
 | # | Se usa cuando | Produce | Prohibido | Superpower |
 |---|---|---|---|---|
-| **K. Arrancar proyecto** | no existe `docs/definition-of-done.md` o `docs/alcance-global.md` | los dos archivos, acordados con el usuario con las preguntas de `references/proyecto.md`, y una propuesta de automatización (plantilla de PR, checks de CI, protección de rama) para que la apruebe | crear módulos o escribir código antes de tener los dos archivos; inventar el alcance final o la DoD sin preguntar | `brainstorming` |
+| **K. Arrancar proyecto** | no existe `docs/definition-of-done.md`, `docs/alcance-global.md` o `docs/plataforma.md` | los archivos que falten, acordados con el usuario con las preguntas de `references/proyecto.md`, y una propuesta de automatización (plantilla de PR, checks de CI, pipeline de despliegue, protección de rama) para que la apruebe | crear módulos o escribir código antes de tener los tres archivos; inventar el alcance final, el stack o la DoD sin preguntar | `brainstorming` |
 | **L. Revisar PR** | el usuario pide revisar, validar o aprobar un PR, una rama o un diff | el informe de revisión de `references/proyecto.md`: tipo del PR con su evidencia, casillas de la DoD de ese tipo, documentación contra código, cuidados del alcance global y veredicto | aprobar sin leer el diff completo; exigirle a un PR trivial lo de una función; dar por cumplida una casilla sin evidencia | `requesting-code-review`, `verification-before-completion` |
 | **A. Módulo nuevo** | no hay código ni documentación suficiente | `vision.md`, `roadmap.md`, una primera versión pequeña en `current-version.md` y el `README.md` con sus verticales en `📋 Definida` | escribir código | `brainstorming` |
 | **B. Auditar prototipo** | hay código anterior a esta metodología | cada parte clasificada en conservar / ajustar / reubicar / reconstruir / eliminar, en la sección «Deuda heredada» de `roadmap.md`, fechada | modificar código; borrar el prototipo sin auditarlo | — |
 | **C. Planificar versión** | hay visión y roadmap, pero no versión activa clara | `current-version.md`: objetivo, qué entra, qué no, criterio de cierre y las verticales | comprometer una versión sin dividirla en verticales | — |
-| **D. Diseñar vertical** | la vertical existe y no tiene diseño aprobado | `verticals/<ID>.md` con diseño y criterios de aceptación; entidades, endpoints, permisos, validaciones, riesgos y regresiones; **los cuidados de `alcance-global.md` que toca y cómo los cumple**; decisiones nuevas en `decisions.md` | escribir código; un diseño que rompe un cuidado del alcance global sin decisión aprobada | `brainstorming` |
-| **E. Planificar vertical** | el diseño está aprobado y no hay plan | plan por tareas: objetivo, archivos, cambios, pruebas, resultado esperado, commit sugerido | implementar; salir del alcance de la vertical activa | `writing-plans` |
+| **D. Diseñar vertical** | la vertical existe y no tiene diseño aprobado | `verticals/<ID>.md` con diseño y criterios de aceptación; entidades, endpoints, permisos, validaciones, riesgos y regresiones; **los cuidados de `alcance-global.md` que toca y cómo los cumple**; **los eventos de uso que emite**; decisiones nuevas en `decisions.md` | escribir código; un diseño que rompe un cuidado del alcance global sin decisión aprobada | `brainstorming` |
+| **E. Planificar vertical** | el diseño está aprobado y no hay plan | plan por tareas: objetivo, archivos, cambios, pruebas, resultado esperado, commit sugerido; si es la primera vertical del proyecto, su primera tarea instala las pruebas y el CI | implementar; salir del alcance de la vertical activa; una tarea sin su prueba | `writing-plans` |
 | **F. Implementar** | diseño **y** plan aprobados | la primera tarea incompleta, sus pruebas ejecutadas, el diff revisado y un commit pequeño | adelantar tareas; refactorizar fuera del alcance | `test-driven-development`, `subagent-driven-development` |
 | **G. Continuar vertical** | la vertical ya está en desarrollo | la siguiente tarea pendiente, tras confirmar la última completada contra Git y las pruebas | repetir tareas hechas, salvo que la evidencia muestre un error | — |
 | **H. Ajuste posterior** | cambia algo ya diseñado, implementado o en curso | análisis de impacto, decisión registrada, diseño actualizado y un plan corto | tratarlo como una instrucción aislada; implementar antes de aprobar | — |
@@ -142,9 +160,10 @@ está descrito arriba.
 la tabla de estados del `README.md`, no pasa por los estados 💡📋🎨👍🔨✅ y nunca se cierra (no
 aplica el Escenario I). Solo crece.
 
-En **K**, si el proyecto ya tiene código pero le faltan los dos archivos, se hacen igual antes de
-la siguiente vertical: la DoD y el alcance global se acuerdan una vez y valen para todos los
-módulos. Si el repo es un centro, viven junto a `docs/modules/` (en el centro o en el repo que el manifiesto
+En **K**, si el proyecto ya tiene código pero le falta alguno de los tres archivos, se hace igual antes de
+la siguiente vertical: la DoD, el alcance global y la plataforma se acuerdan una vez y valen para todos los
+módulos. Si el stack ya está elegido, `plataforma.md` lo documenta tal cual (con lo que dice el
+código) y solo pregunta lo que falte: CI/CD y métricas. Si el repo es un centro, viven junto a `docs/modules/` (en el centro o en el repo que el manifiesto
 declare como «Documentación del producto»), y la plantilla de PR
 de cada repo de código los enlaza.
 
@@ -206,7 +225,17 @@ continuá sin pedir una confirmación repetida.
 - **Lo que se entrega hoy no le cierra la puerta al alcance final.** Todo diseño y todo PR
   cumple los cuidados de `docs/alcance-global.md`. Si cumplir uno cuesta trabajo real, se le
   pregunta al usuario; no se salta en silencio.
+- **El nombre comercial no se escribe en la estructura.** Carpetas, archivos, repos, paquetes,
+  rutas, variables de entorno, tablas e identificadores usan un nombre técnico neutro, nunca el
+  nombre del producto o de la marca. El nombre visible vive en **una sola constante o
+  configuración** y todo lo lee de ahí: pantallas, mensajes, correos y pruebas. Renombrar el
+  producto debe ser un cambio de una línea, no buscar y reemplazar en todo el repo. Un PR que
+  escribe el nombre comercial a mano en otro lugar se corrige antes de aprobarlo.
 - **Un PR no se aprueba si su documentación contradice su código**, aunque las pruebas pasen.
+- **Nunca desplegar a mano.** Si no hay pipeline, se propone crearlo; no se hace el deploy «por
+  esta vez» sin que el usuario lo pida explícitamente.
+- Sin pruebas instaladas en el proyecto, la primera tarea es instalarlas, no la función.
+- Una función nueva sin su evento de uso está incompleta.
 - Lo que exige un PR depende de su tipo según la DoD: a un cambio trivial no se le piden pruebas
   nuevas, a uno que toca datos o permisos no se le perdona ninguna casilla.
 - En un centro, los agentes delegados en repos de código no escriben documentación: entregan
