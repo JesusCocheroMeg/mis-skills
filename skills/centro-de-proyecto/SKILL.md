@@ -1,6 +1,6 @@
 ---
 name: centro-de-proyecto
-description: Úsala cuando el usuario quiera crear, adoptar o abrir el repo centro de un proyecto (su espacio privado junto a los repos de código, o una carpeta dentro del mismo repo), arrancar el día o pedir el estado de un proyecto con varios repos, guardar fuentes que entregó un cliente o equipo, delegar trabajo a agentes en otros repos del proyecto, o hacer commit o PR en un repo que es del cliente o del equipo. También cuando el usuario cuenta lo que pasó en un proyecto (una reunión, un mensaje del cliente, un cambio, un problema), pregunta qué sigue, quiere preparar o cerrar una reunión, necesita que le expliquen algo para avanzar o busca herramientas para el proyecto. También cuando quiere crear, sincronizar o cambiar el tablero del proyecto (la app en claude.ai para verlo desde el celular). También ante menciones de centro, manifiesto, fuentes, bitácora, documentación general o tablero.
+description: Úsala cuando el usuario quiera crear, adoptar o abrir el repo centro de un proyecto (su espacio privado junto a los repos de código, o una carpeta dentro del mismo repo), arrancar el día o pedir el estado de un proyecto con varios repos, guardar fuentes que entregó un cliente o equipo, delegar trabajo a agentes en otros repos del proyecto, o hacer commit o PR en un repo que es del cliente o del equipo. También cuando el usuario cuenta lo que pasó en un proyecto (una reunión, un mensaje del cliente, un cambio, un problema), pregunta qué sigue, quiere preparar o cerrar una reunión, necesita que le expliquen algo para avanzar o busca herramientas para el proyecto. También cuando quiere crear, sincronizar o cambiar el tablero del proyecto (la app en claude.ai para verlo desde el celular). También ante menciones de centro, manifiesto, fuentes, bitácora, documentación general, tablero o panel (un «panel», «panel visual», «dashboard» o «app» de un proyecto es su tablero).
 argument-hint: "[crear | adoptar | abrir sesión | contar | reunión | explicar | delegar | fuentes]"
 ---
 
@@ -152,6 +152,11 @@ con el enlace; si no la tiene, nada de esto aplica.
 
 Para crear, sincronizar o cambiar un tablero, leé `references/tablero.md`. La plantilla es
 `assets/tablero.html`. Se crea solo si el usuario lo pide.
+
+**«Panel», «panel visual», «dashboard» o «app del proyecto» significan el tablero.** Los paneles
+son aplicativos (datos en `db`, chat con `sample`), nunca una página estática aparte. Si el centro
+no tiene tablero, pedirlo así cuenta como pedido de crearlo desde la plantilla; si ya lo tiene, lo
+que se pide va a sus datos (`proyecto/info`, `galeria`, `tareas`).
 
 Reglas del tablero, al crearlo y en cada sincronización: **un solo artefacto por centro** (nunca
 páginas aparte: lo visual va en su `galeria`); **todo lo relevante con detalle**, incluido lo que

@@ -15,7 +15,7 @@ en el arranque, no sincronices nada y no lo crees por tu cuenta.
 | Vista | Qué muestra |
 |---|---|
 | Inicio | mensaje del día de Claude, cifras (abiertas, prioridad, notas por pasar, hechas), «Lo más importante» (prioridad, en curso, bloqueado; hasta 5) y nota rápida |
-| Proyecto | resumen (qué es, enlaces, para qué, para quién, estado) y **accesos rápidos**: una tarjeta por sección («Qué tiene», cada sección de la galería como «Logos» o «Plantillas», «Lo que viene», «Decisiones clave», «Cómo se trabaja») que abre esa sección sola, con botones para saltar entre secciones |
+| Proyecto | resumen (qué es, enlaces, cifras clave, para qué, para quién, estado) y **accesos rápidos**: una tarjeta por sección («Qué tiene» —como mapa por zonas con filtro de prioridad si las piezas traen `zona`—, «Recorrido», «Quién lo usa», «Con qué se conecta», «Siempre se cumple», «Falta decidir», cada sección de la galería como «Logos» o «Plantillas», «Lo que viene», «Decisiones clave», «Cómo se trabaja») que abre esa sección sola, con botones para saltar entre secciones |
 | Tareas | tareas por grupo con avance y filtros; se marcan como hechas ahí mismo |
 | Notas | notas rápidas, con filtro «Por pasar» y la respuesta de Claude debajo si la hay |
 | Chat | Claude responde en vivo (capacidad `sample`) con la ficha, tareas y notas como contexto; puede crear tareas, cambiar su estado y guardar notas o encargos. No ve el repo |
@@ -30,7 +30,7 @@ documentos que ya existen, y la página debe aguantar campos ausentes.
 
 | Documento | Campos |
 |---|---|
-| `proyecto/info` | `nombre`, `subtitulo` (debajo del nombre en el menú), `fase`, `resumen`, `queEs`, `paraQue`, `paraQuien`, `fuente`, `enlaces [{label, url}]`, `piezas [{nombre, que, estado: listo\|en-curso\|falta, url?}]`, `proximos [texto]`, `decisiones [{id, texto}]`, `stack [texto]`, `comoSeTrabaja [texto]`, `reglasChat [texto]` (reglas propias del proyecto para el chat), `sugeridas [texto]` (preguntas de arranque del chat), `actualizado` (ISO) |
+| `proyecto/info` | `nombre`, `subtitulo` (debajo del nombre en el menú), `fase`, `resumen`, `queEs`, `paraQue`, `paraQuien`, `fuente`, `enlaces [{label, url}]`, `piezas [{nombre, que, estado: listo\|en-curso\|falta, url?}]`, `proximos [texto]`, `decisiones [{id, texto}]`, `stack [texto]`, `comoSeTrabaja [texto]`, `reglasChat [texto]` (reglas propias del proyecto para el chat), `sugeridas [texto]` (preguntas de arranque del chat), `actualizado` (ISO). **Opcionales para el mapa del producto** (la vista Proyecto los muestra solo si existen): `piezas[].zona` (columna), `piezas[].prioridad` (id), `piezas[].detalle` (se ve al tocar), `piezas[].ref` (p. ej. REQ); `zonas [{nombre, sub}]` (orden y subtítulo de columnas); `prioridades [{id, label, nota}]` (orden de los filtros y leyenda; la primera es la más urgente); `datos [{label, valor}]` (cifras clave arriba de la ficha); `recorrido [{etapa, titulo, que}]`; `usuarios [{nombre, puntos [texto]}]`; `conexiones [{tipo, nombre, que}]`; `reglas [{id, texto}]` (lo que siempre se cumple); `bloqueos [{id, texto}]` (lo que falta decidir) |
 | `proyecto/hoy` | `mensaje`, `actualizado`. Lo reescribe Claude en cada sincronización |
 | `tareas/<id-legible>` | `titulo`, `grupo`, `estado: pendiente\|en curso\|bloqueado\|hecho`, `prioridad`, `orden`, `nota?`, `origen?` (`chat`), `cambioTablero?` (ISO; lo pone la página o el chat al cambiar algo) |
 | `notas/<id>` | `texto`, `creada`, `procesada`, `origen: tablero\|chat`, `tipo?: nota\|encargo`, `destino?`, `respuestaClaude?` |
@@ -161,6 +161,7 @@ porque cambió, releé y rehacé; nunca pises lo que Jesús acaba de escribir.
 
 | Error | Qué hacer |
 |---|---|
+| Responder a «hazme un panel» con una página estática | «Panel» es el tablero: se crea desde la plantilla o se cargan sus datos |
 | Crear el tablero porque «sería útil» | Solo si Jesús lo pide; ofrecelo una vez al crear o adoptar el centro |
 | Poner lo propio del proyecto en el HTML | Va en `proyecto/info` (`subtitulo`, `reglasChat`, `sugeridas`…) |
 | Publicar uno nuevo para actualizar | Misma ruta o `url`; si no, cambia el enlace del celular |
