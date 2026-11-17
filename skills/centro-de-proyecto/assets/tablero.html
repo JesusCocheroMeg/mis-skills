@@ -181,6 +181,40 @@ textarea { width: 100%; min-height: 84px; resize: vertical; font: inherit; color
 .steps { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px }
 .chips { display: flex; gap: 6px; flex-wrap: wrap }
 .footer-note { font-size: .8rem; color: var(--muted) }
+/* Mapa: piezas por zona con filtro de prioridad (campos opcionales zona/prioridad/detalle/ref) */
+.datos { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(190px, 100%), 1fr)); gap: 10px }
+.dato { background: var(--accent); color: var(--accent-fg); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px }
+.dato b { font-size: .74rem; font-weight: 700; opacity: .85 }
+.dato span { font-weight: 700; font-size: .92rem }
+.mapa { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 12px; align-items: start }
+.zona { background: var(--surface-2); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0 }
+.zona-h { display: flex; flex-direction: column; gap: 2px; padding: 2px 4px 4px }
+.zona-h h3 { font-size: 1rem; font-weight: 800 }
+.zona-h small { font-size: .8rem; color: var(--muted) }
+.mod { display: flex; flex-direction: column; gap: 5px; padding: 11px 13px; background: var(--surface); border: 1px solid var(--line); border-radius: 11px;
+  text-align: left; color: var(--fg); width: 100% }
+.mod:hover { border-color: var(--accent) }
+.mod-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px }
+.mod-h b { font-size: .92rem; font-weight: 800; overflow-wrap: anywhere }
+.mod p { font-size: .84rem; color: var(--muted) }
+.mod .mas { display: none; font-size: .84rem; border-top: 1px dashed var(--line); padding-top: 7px }
+.mod[aria-expanded="true"] .mas { display: block }
+.mod .ref { font-size: .72rem; color: var(--muted); font-weight: 700; font-variant-numeric: tabular-nums }
+.leyenda { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .8rem; color: var(--muted) }
+.leyenda span { display: inline-flex; gap: 6px; align-items: center }
+.pr-0 { background: var(--bad-soft); color: var(--bad) }
+.pr-1 { background: var(--accent-soft); color: var(--accent) }
+.pr-2 { background: var(--warn-soft); color: var(--warn) }
+.pr-3 { background: var(--surface-2); color: var(--muted) }
+.recorrido { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); gap: 8px }
+.paso { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 4px }
+.paso .n { font-size: .74rem; font-weight: 800; color: var(--accent) }
+.paso b { font-size: .92rem }
+.paso small { font-size: .82rem; color: var(--muted) }
+.usuarios { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); gap: 10px }
+.usuario { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 13px 14px; display: flex; flex-direction: column; gap: 6px }
+.usuario ul { margin: 0; padding-left: 18px; font-size: .86rem; color: var(--muted) }
+.con-tipo { font-size: .7rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .05em }
 
 /* Chat */
 .chat { display: flex; flex-direction: column; gap: 10px }
@@ -225,7 +259,9 @@ textarea { width: 100%; min-height: 84px; resize: vertical; font: inherit; color
     vista: "inicio", filtroT: "abiertas", filtroN: "todas", sinDb: false, error: "",
     ia: { disponible: null, herramientas: false, enCurso: false, texto: "", acciones: [], aviso: "" } };
   let db = null, sample = null, ctl = null;
+  state.filtroP = "todas";
   try { const f = localStorage.getItem("tb-filtro"); if (f) state.filtroT = f; } catch (e) {}
+  try { const f = localStorage.getItem("tb-filtro-p"); if (f) state.filtroP = f; } catch (e) {}
 
   /* utilidades */
   const h = (tag, props = {}, ...kids) => {
@@ -372,7 +408,11 @@ textarea { width: 100%; min-height: 84px; resize: vertical; font: inherit; color
   function seccionesProyecto(i) {
     const out = [];
     const piezas = i.piezas || [];
-    if (piezas.length) out.push({ id: "piezas", titulo: "Qué tiene", resumen: piezas.filter((p) => p.estado === "listo").length + " de " + piezas.length + " listas",
+    const conZona = piezas.some((p) => p.zona);
+    if (piezas.length && conZona) out.push({ id: "piezas", titulo: "Qué tiene",
+      resumen: piezas.length + " piezas en " + new Set(piezas.map((p) => p.zona || "Otras")).size + " zonas · " + piezas.filter((p) => p.estado === "listo").length + " listas",
+      cuerpo: () => mapaPiezas(i, piezas) });
+    if (piezas.length && !conZona) out.push({ id: "piezas", titulo: "Qué tiene", resumen: piezas.filter((p) => p.estado === "listo").length + " de " + piezas.length + " listas",
       cuerpo: () => h("div", { class: "grid2" }, piezas.map((p) => {
         const [cls, txt] = PIEZA_ESTADO[p.estado] || ["", p.estado || ""];
         return h("article", { class: "pieza" },
@@ -389,6 +429,19 @@ textarea { width: 100%; min-height: 84px; resize: vertical; font: inherit; color
       out.push({ id: "gal-" + titulo, titulo, resumen: lista.length + (lista.length === 1 ? " elemento" : " elementos") + (rev ? " · " + rev + " en revisión" : ""),
         mini: primera, logo: lista[0].tipo === "logo", cuerpo: () => galeriaGrid(lista) });
     }
+    if ((i.recorrido || []).length) out.push({ id: "recorrido", titulo: "Recorrido", resumen: i.recorrido.length + " pasos",
+      cuerpo: () => h("div", { class: "recorrido" }, i.recorrido.map((r, n) => h("div", { class: "paso" },
+        h("span", { class: "n", text: (n + 1) + (r.etapa ? " · " + r.etapa : "") }), h("b", { text: r.titulo || "" }), r.que ? h("small", { text: r.que }) : null))) });
+    if ((i.usuarios || []).length) out.push({ id: "usuarios", titulo: "Quién lo usa", resumen: i.usuarios.length + " tipos de usuario",
+      cuerpo: () => h("div", { class: "usuarios" }, i.usuarios.map((u) => h("div", { class: "usuario" },
+        h("b", { text: u.nombre || "" }), (u.puntos || []).length ? h("ul", {}, u.puntos.map((t) => h("li", { text: t }))) : null))) });
+    if ((i.conexiones || []).length) out.push({ id: "conexiones", titulo: "Con qué se conecta", resumen: i.conexiones.length + " piezas y herramientas",
+      cuerpo: () => h("div", { class: "grid2" }, i.conexiones.map((c) => h("article", { class: "pieza" },
+        c.tipo ? h("span", { class: "con-tipo", text: c.tipo }) : null, h("h3", { text: c.nombre || "" }), c.que ? h("p", { text: c.que }) : null))) });
+    if ((i.reglas || []).length) out.push({ id: "reglas", titulo: "Siempre se cumple", resumen: i.reglas.length + " reglas",
+      cuerpo: () => h("div", { class: "card" }, i.reglas.map((d) => h("div", { class: "dec" }, h("code", { text: d.id || "Regla" }), h("span", { text: d.texto })))) });
+    if ((i.bloqueos || []).length) out.push({ id: "bloqueos", titulo: "Falta decidir", resumen: i.bloqueos.length + " bloqueos abiertos",
+      cuerpo: () => h("div", { class: "card" }, i.bloqueos.map((d) => h("div", { class: "dec" }, h("code", { text: d.id || "—" }), h("span", { text: d.texto })))) });
     if ((i.proximos || []).length) out.push({ id: "proximos", titulo: "Lo que viene", resumen: i.proximos.length + " pasos",
       cuerpo: () => h("div", { class: "card" }, h("ul", { class: "steps" }, i.proximos.map((t) => h("li", { text: t })))) });
     if ((i.decisiones || []).length) out.push({ id: "decisiones", titulo: "Decisiones clave", resumen: i.decisiones.length + " anotadas",
@@ -398,6 +451,39 @@ textarea { width: 100%; min-height: 84px; resize: vertical; font: inherit; color
         (i.comoSeTrabaja || []).length ? h("div", { class: "card" }, h("ol", { class: "steps" }, i.comoSeTrabaja.map((s) => h("li", { text: s })))) : null,
         (i.stack || []).length ? h("div", { class: "chips" }, i.stack.map((s) => h("span", { class: "chip", text: s }))) : null) });
     return out;
+  }
+  /* Mapa de piezas: columnas por zona, filtro por prioridad y detalle al tocar */
+  function mapaPiezas(i, piezas) {
+    const defs = (i.prioridades || []).filter((p) => p && p.id);
+    const ids = defs.length ? defs.map((p) => p.id) : [...new Set(piezas.map((p) => p.prioridad).filter(Boolean))];
+    const label = (id) => (defs.find((p) => p.id === id) || {}).label || id;
+    const cls = (id) => "pill pr-" + Math.min(Math.max(ids.indexOf(id), 0), 3);
+    if (state.filtroP !== "todas" && !ids.includes(state.filtroP)) state.filtroP = "todas";
+    const zonasDef = (i.zonas || []).filter((z) => z && z.nombre);
+    const nombres = [...zonasDef.map((z) => z.nombre), ...new Set(piezas.map((p) => p.zona || "Otras"))].filter((z, n, a) => a.indexOf(z) === n);
+    const filtrar = (id) => { state.filtroP = id; try { localStorage.setItem("tb-filtro-p", id); } catch (e) {} render(true); };
+    return h("div", { class: "sec" },
+      ids.length ? h("div", { class: "filtros", role: "group", "aria-label": "Filtrar por prioridad" },
+        [["todas", "Todo"], ...ids.map((id) => [id, label(id)])].map(([id, l]) =>
+          h("button", { type: "button", "aria-pressed": String(state.filtroP === id), text: l, onclick: () => filtrar(id) }))) : null,
+      defs.some((p) => p.nota) ? h("div", { class: "leyenda" }, defs.map((p) => h("span", {}, h("i", { class: cls(p.id), text: p.label || p.id }), p.nota || ""))) : null,
+      h("div", { class: "mapa" }, nombres.map((z) => {
+        const todas = piezas.filter((p) => (p.zona || "Otras") === z);
+        const vis = todas.filter((p) => state.filtroP === "todas" || p.prioridad === state.filtroP);
+        const sub = (zonasDef.find((x) => x.nombre === z) || {}).sub;
+        return h("div", { class: "zona" },
+          h("div", { class: "zona-h" }, h("h3", { text: z }), h("small", { text: (sub ? sub + " · " : "") + vis.length + " de " + todas.length })),
+          vis.length ? vis.map((p) => {
+            const [ecls, etxt] = PIEZA_ESTADO[p.estado] || ["", p.estado || ""];
+            const b = h("button", { type: "button", class: "mod", "aria-expanded": "false" },
+              h("span", { class: "mod-h" }, h("b", { text: p.nombre || "" }), p.prioridad ? h("span", { class: cls(p.prioridad), text: label(p.prioridad) }) : null),
+              p.que ? h("p", { text: p.que }) : null,
+              p.detalle ? h("span", { class: "mas", text: p.detalle }) : null,
+              h("span", { class: "pills" }, etxt ? h("span", { class: "pill " + ecls, text: etxt }) : null, p.ref ? h("span", { class: "ref", text: p.ref }) : null));
+            b.addEventListener("click", () => b.setAttribute("aria-expanded", String(b.getAttribute("aria-expanded") !== "true")));
+            return b;
+          }) : h("p", { class: "hint", text: "Nada con esta prioridad." }));
+      })));
   }
   function galeriaGrid(lista) {
     return h("div", { class: "galeria" }, lista.map((g) => {
@@ -432,6 +518,7 @@ textarea { width: 100%; min-height: 84px; resize: vertical; font: inherit; color
         h("p", { class: "lead", text: i.queEs || i.resumen || "" }),
         h("div", { class: "meta" }, i.fase ? h("span", { class: "chip acc", text: i.fase }) : null,
           (i.enlaces || []).map((l) => h("a", { class: "chip", href: l.url, target: "_blank", rel: "noopener", text: l.label })))),
+      (i.datos || []).length ? h("div", { class: "datos" }, i.datos.map((d) => h("div", { class: "dato" }, h("b", { text: d.label || "" }), h("span", { text: d.valor || "" })))) : null,
       secs.length ? h("section", { class: "sec" }, h("div", { class: "sec-h" }, h("h2", { text: "Accesos rápidos" })),
         h("div", { class: "accesos" }, secs.map((s) => h("button", { type: "button", class: "acceso", onclick: () => abrirSeccion(s.id) },
           s.mini ? h("span", { class: "acceso-img" + (s.mini.fondo ? " " + s.mini.fondo : "") + (s.logo ? " es-logo" : "") }, h("img", { src: s.mini.src, alt: "" })) : null,
@@ -534,7 +621,8 @@ textarea { width: 100%; min-height: 84px; resize: vertical; font: inherit; color
     const i = state.info || {};
     const tareas = state.tareas.map((t) => ({ id: t.id, titulo: t.titulo, grupo: t.grupo, estado: t.estado, prioridad: !!t.prioridad, nota: t.nota || undefined }));
     const notas = state.notas.slice(0, 15).map((n) => ({ texto: n.texto, creada: n.creada, enElCentro: !!n.procesada, tipo: n.tipo || "nota" }));
-    const ficha = { nombre: i.nombre, queEs: i.queEs, paraQue: i.paraQue, paraQuien: i.paraQuien, estado: i.resumen, piezas: i.piezas, proximos: i.proximos, decisiones: i.decisiones, comoSeTrabaja: i.comoSeTrabaja };
+    const ficha = { nombre: i.nombre, queEs: i.queEs, paraQue: i.paraQue, paraQuien: i.paraQuien, estado: i.resumen, piezas: i.piezas, proximos: i.proximos, decisiones: i.decisiones, comoSeTrabaja: i.comoSeTrabaja,
+      datos: i.datos, recorrido: i.recorrido, usuarios: i.usuarios, conexiones: i.conexiones, reglas: i.reglas, bloqueos: i.bloqueos };
     const reglasProyecto = (i.reglasChat || []).map((r) => "- " + r + "\n").join("");
     return "Eres Claude, el asistente de Jesús Cochero dentro del tablero del proyecto «" + (i.nombre || "Proyecto") + "» (una app en claude.ai conectada al centro privado del proyecto).\n\n" +
       "Reglas:\n- Responde en español de Colombia, de tú, breve y directo. Sin emoji ni signos de exclamación. Texto plano: nada de markdown con asteriscos ni encabezados; si haces una lista usa guiones.\n" +
