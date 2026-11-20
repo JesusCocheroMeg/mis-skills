@@ -1,6 +1,6 @@
 ---
 name: centro-de-proyecto
-description: Úsala cuando el usuario quiera crear, adoptar o abrir el repo centro de un proyecto (su espacio privado junto a los repos de código, o una carpeta dentro del mismo repo), arrancar el día o pedir el estado de un proyecto con varios repos, guardar fuentes que entregó un cliente o equipo, delegar trabajo a agentes en otros repos del proyecto, o hacer commit o PR en un repo que es del cliente o del equipo. También cuando el usuario cuenta lo que pasó en un proyecto (una reunión, un mensaje del cliente, un cambio, un problema), pregunta qué sigue, quiere preparar o cerrar una reunión, necesita que le expliquen algo para avanzar o busca herramientas para el proyecto. También cuando quiere crear, sincronizar o cambiar el tablero del proyecto (la app en claude.ai para verlo desde el celular). También ante menciones de centro, manifiesto, fuentes, bitácora, documentación general, tablero o panel (un «panel», «panel visual», «dashboard» o «app» de un proyecto es su tablero).
+description: Úsala cuando el usuario quiera crear, adoptar o abrir el repo centro de un proyecto (su espacio privado junto a los repos de código, o una carpeta dentro del mismo repo), arrancar el día o pedir el estado de un proyecto con varios repos, guardar fuentes que entregó un cliente o equipo, delegar trabajo a agentes en otros repos del proyecto, o hacer commit o PR en un repo que es del cliente o del equipo. También cuando el usuario cuenta lo que pasó en un proyecto (una reunión, un mensaje del cliente, un cambio, un problema), pregunta qué sigue, quiere preparar o cerrar una reunión, necesita que le expliquen algo para avanzar o busca herramientas para el proyecto. También cuando quiere crear, sincronizar o cambiar el tablero del proyecto (la app en claude.ai para verlo desde el celular). También ante menciones de centro, manifiesto, fuentes, bitácora, documentación general, tablero o panel (un «panel», «panel visual», «dashboard» o «app» de un proyecto es su tablero). No la uses para analizar cómo está hecho un aplicativo («analiza», «profundiza en», «compara», «cómo funciona por dentro»): eso es analizar-aplicativo.
 argument-hint: "[crear | adoptar | abrir sesión | contar | reunión | explicar | delegar | fuentes]"
 ---
 
@@ -313,6 +313,9 @@ un concepto del negocio del cliente) o pide herramientas:
    recomendación.
 4. Si la explicación sirve para después, guardala en `guias/<tema>.md` y enlazala desde
    `pendientes.md` o la reunión donde se usa.
+5. Si la explicación enseña conceptos técnicos nuevos, anótalos en el registro de conceptos de
+   Jesús (`~/Desktop/Desarrollo/Analisis/conceptos-aprendidos.md`: concepto · explicación corta ·
+   dónde se enseñó · fecha), el mismo que usa `analizar-aplicativo`.
 
 ## Reglas duras
 

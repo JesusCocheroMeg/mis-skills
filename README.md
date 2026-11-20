@@ -8,6 +8,7 @@ Colección de skills personalizadas para Claude Code.
 |-------|----------------|
 | [centro-de-proyecto](skills/centro-de-proyecto/SKILL.md) | Crear, adoptar o abrir el repo centro de un proyecto: estado multi-repo, fuentes del cliente, delegación a agentes, commits/PR en repos ajenos. |
 | [documentos-para-compartir](skills/documentos-para-compartir/SKILL.md) | Propuestas, informes, resúmenes, briefs y benchmarks para gente no técnica, con el diseño de cada proyecto, exportados a web, HTML y PDF (láminas 1280×720); también README de repositorios. |
+| [analizar-aplicativo](skills/analizar-aplicativo/SKILL.md) | Analiza un aplicativo propio o ajeno y arma una presentación HTML con diagramas: negocio y técnica unidos, seguridad, si la construcción alcanza y sus límites, qué preguntar y conceptos nuevos. Modos mapa, profundizar y comparar. |
 | [desarrollo-modular-vertical](skills/desarrollo-modular-vertical/SKILL.md) | Desarrollo por módulos, verticales y versiones: iniciar, auditar, planificar, ajustar y cerrar. |
 | [prompt-builder](skills/prompt-builder/SKILL.md) | Crear o revisar prompts de implementación para features, módulos o endpoints (sin implementar). |
 | [plane-tareas](skills/plane-tareas/SKILL.md) | Crear o cerrar tareas de Plane con fechas (inicio y fin al día siguiente), responsable y tiempo bien registrado (script que convierte a segundos y verifica). |
