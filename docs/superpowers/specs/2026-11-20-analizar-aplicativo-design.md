@@ -2,7 +2,7 @@
 
 - **Fecha:** 2026-11-20
 - **Pide:** Jesús
-- **Estado:** por aprobar
+- **Estado:** aprobado por Jesús el 2026-11-20 (con el modo comparar)
 
 ## Intención
 
@@ -25,18 +25,22 @@ El resultado es una **presentación HTML con diagramas, para él**, que cubre do
 1. **Modo mapa** («analiza este aplicativo»): una presentación del aplicativo completo.
 2. **Modo profundizar** («profundiza en el worker / en la seguridad / en Ventas»): una presentación por tema,
    enlazada desde el mapa.
-3. **Análisis de alcance y límites:** para cada objetivo del negocio, si la construcción lo **sostiene**, lo
+3. **Modo comparar** («compara Ventas de crm-conex con Ventas de ARMEGA»; agregado el 2026-11-20): pone lado a lado
+   dos aplicativos, o el mismo tema en dos aplicativos: qué resuelve cada uno, cómo, qué hace mejor cada uno, qué
+   del primero no debe perderse si el segundo lo reemplaza, y la tabla de alcance y límites de ambos. Usa los
+   mapas de los dos si existen.
+4. **Análisis de alcance y límites:** para cada objetivo del negocio, si la construcción lo **sostiene**, lo
    **sostiene con límite** o lo **frena**; en qué punto se llega al límite (usuarios, clientes, datos) y qué haría
    falta para superarlo. Los principales en el mapa; los de cada pieza al profundizar.
-4. **Para opinar y decidir:** cada pieza cierra con «qué mirar y qué preguntar» y con un juicio (qué está bien,
+5. **Para opinar y decidir:** cada pieza cierra con «qué mirar y qué preguntar» y con un juicio (qué está bien,
    qué es riesgo, qué está abierto y qué recomienda la skill, con su porqué).
-5. **Honestidad sobre la fuente:** toda afirmación lleva una marca: **comprobado** (lo vio en código, esquema,
+6. **Honestidad sobre la fuente:** toda afirmación lleva una marca: **comprobado** (lo vio en código, esquema,
    configuración o documento, con la ruta), **deducido** (lo infiere) o **por confirmar** (pregunta para alguien
    que conozca el aplicativo).
-6. **Aprender sin repetir:** un registro de conceptos ya explicados. Un concepto nuevo se enseña completo (qué es,
+7. **Aprender sin repetir:** un registro de conceptos ya explicados. Un concepto nuevo se enseña completo (qué es,
    ejemplo simple, por qué importa aquí); uno ya registrado se nombra con una línea y su enlace a donde se
    explicó.
-7. **Funciona en los dos casos:**
+8. **Funciona en los dos casos:**
    - **Aplicativo propio:** lee primero lo escrito (brief, decisiones, verticales, centro del proyecto), lo cruza
      con el código y señala dónde no coinciden.
    - **Aplicativo ajeno:** deduce el negocio desde el código, la base de datos, las pantallas y los textos, y
@@ -109,6 +113,13 @@ Explica el tema con la forma de la lámina del worker: la idea con una analogía
 alcance y límites de esa pieza, qué mirar y qué preguntar, para aprender. Agrega su enlace en la sección 9 del
 mapa.
 
+### Flujo del modo comparar
+
+Lee o arma un contexto mínimo de cada lado (usa sus mapas si existen). Secciones: qué resuelve cada uno, cómo lo
+resuelve (flujos lado a lado, diagrama), piezas y tecnologías lado a lado, alcance y límites de cada uno, qué hace
+mejor cada uno, qué no debe perderse en un reemplazo (lista para verificar), qué mirar y qué preguntar, para
+aprender. Se guarda como `AAAA-MM-DD-comparar-<a>-<b>[-<tema>].html` y se enlaza desde los mapas de ambos.
+
 ### Dónde queda (decisión de Claude, Jesús puede cambiarla)
 
 - **Si el aplicativo tiene centro de proyecto:** en el `explicaciones/` del centro, con nombre
@@ -152,6 +163,7 @@ skills/analizar-aplicativo/
   references/
     mapa.md                    # secciones del mapa y qué va en cada una
     profundizar.md             # forma de la presentación por tema
+    comparar.md                # forma de la presentación lado a lado
     negocio.md                 # cómo deducir el negocio en un aplicativo ajeno y leerlo en uno propio
     alcance-y-limites.md       # cómo armar la tabla de objetivos frente a construcción
     marcas.md                  # comprobado, deducido, por confirmar: cuándo se usa cada una
